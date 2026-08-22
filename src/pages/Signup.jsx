@@ -10,6 +10,7 @@ import {
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
+import urjaaLogo from '../assets/urjaa.svg';
 import './Signup.css';
 
 export default function Signup() {
@@ -55,7 +56,7 @@ export default function Signup() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="signup-page__logo">
-          <img src="/urjaa.svg" alt="URJAA Logo" className="signup-page__logo-img" width="48" height="48" />
+          <img src={urjaaLogo} alt="URJAA Logo" className="signup-page__logo-img" width="48" height="48" />
         </div>
 
         <h1 className="signup-page__title">Create <span className="tiranga-gradient-text">Account</span></h1>

@@ -18,6 +18,7 @@ import GlowBlob from '../components/GlowBlob';
 import '../components/GlassCard.css';
 import './Landing.css';
 import heroImage from '../assets/urjaa-network-hero.png';
+import urjaaLogo from '../assets/urjaa.svg';
 
 const features = [
   {
@@ -288,7 +289,7 @@ const booking = await fetch('/api/v1/bookings', {
           <div className="landing__footer-inner">
             <div className="landing__footer-brand">
               <div className="navbar__logo-icon" style={{ width: 36, height: 36, minWidth: 36, minHeight: 36 }}>
-                <img src="/urjaa.svg" alt="URJAA Logo" className="navbar__logo-img" width="28" height="28" />
+                <img src={urjaaLogo} alt="URJAA Logo" className="navbar__logo-img" width="28" height="28" />
               </div>
               <span style={{ fontWeight: 800, letterSpacing: 0.5, fontSize: '1rem' }}>URJAA • UEI</span>
             </div>

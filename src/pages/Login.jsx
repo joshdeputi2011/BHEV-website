@@ -8,6 +8,7 @@ import {
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
+import urjaaLogo from '../assets/urjaa.svg';
 import './Login.css';
 
 export default function Login() {
@@ -45,7 +46,7 @@ export default function Login() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="login-page__logo">
-          <img src="/urjaa.svg" alt="URJAA Logo" className="login-page__logo-img" width="48" height="48" />
+          <img src={urjaaLogo} alt="URJAA Logo" className="login-page__logo-img" width="48" height="48" />
         </div>
 
         <h1 className="login-page__title">Welcome <span className="tiranga-gradient-text">Back</span></h1>

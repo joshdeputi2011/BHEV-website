@@ -12,6 +12,7 @@ import {
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import GuideModal from './GuideModal';
+import urjaaLogo from '../assets/urjaa.svg';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -72,7 +73,7 @@ export default function Navbar() {
           <div className="navbar__inner">
             <Link to="/" className="navbar__logo">
               <div className="navbar__logo-icon">
-                <img src="/urjaa.svg" alt="URJAA Logo" className="navbar__logo-img" width="34" height="34" />
+                <img src={urjaaLogo} alt="URJAA Logo" className="navbar__logo-img" width="34" height="34" />
               </div>
               <div className="navbar__logo-group">
                 <span className="navbar__logo-text">URJAA</span>

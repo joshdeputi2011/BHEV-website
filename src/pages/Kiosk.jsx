@@ -23,8 +23,9 @@ import {
   DismissRegular,
   GaugeRegular,
   WarningRegular,
-  DocumentRegular
+  DocumentRegular,
 } from '@fluentui/react-icons';
+import urjaaLogo from '../assets/urjaa.svg';
 import './Kiosk.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
@@ -310,7 +311,7 @@ export default function Kiosk() {
       <header className="kiosk-top-bar">
         <div className="kiosk-top-bar__left">
           <Link to="/discover" className="kiosk-brand">
-            <img src="/urjaa.svg" alt="URJAA Logo" className="kiosk-brand-logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+            <img src={urjaaLogo} alt="URJAA Logo" className="kiosk-brand-logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
             <span>URJAA KIOSK</span>
           </Link>
           <div className="kiosk-station-selector">

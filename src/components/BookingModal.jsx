@@ -281,7 +281,9 @@ export default function BookingModal({ station, isOpen, onClose, onBookingSucces
 
     const payloadBody = {
       locationId: station.id,
+      stationName: station.name,
       connectorId: selectedConnector.connectorId || selectedConnector.id,
+      connectorStandard: selectedConnector.standard || 'CCS2',
       slotStart: startIso,
       slotEnd: endIso,
       bookingType,

@@ -418,6 +418,19 @@ export default function Operator() {
     }
   };
 
+  const handleDeleteStation = async (station) => {
+    if (!window.confirm(`Delete ${station.name}? This cannot be undone.`)) return;
+    try {
+      setLoading(true);
+      await apiRequest(`/api/v1/operator/stations/${station.id}`, { method: 'DELETE' });
+      showToast('Station deleted.');
+      if (selectedStation?.id === station.id) setSelectedStation(null);
+      await fetchAllData();
+    } catch (err) {
+      alert(`Unable to delete station: ${err.message}`);
+    } finally { setLoading(false); }
+  };
+
   const handleAddCharger = async (e) => {
     e.preventDefault();
     if (!selectedStation) return;
@@ -435,6 +448,18 @@ export default function Operator() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteCharger = async (charger) => {
+    if (!window.confirm('Delete this charger? This cannot be undone.')) return;
+    try {
+      setLoading(true);
+      await apiRequest(`/api/v1/operator/chargers/${charger.id}`, { method: 'DELETE' });
+      showToast('Charger deleted.');
+      await fetchAllData();
+    } catch (err) {
+      alert(`Unable to delete charger: ${err.message}`);
+    } finally { setLoading(false); }
   };
 
   const handleToggleMaintenance = async (charger) => {
@@ -985,6 +1010,23 @@ export default function Operator() {
                                 >
                                   <EditRegular /> Edit
                                 </button>
+                                <button
+                                  className="btn-secondary btn-sm"
+                                  onClick={() => {
+                                    setSelectedStation(st);
+                                    setShowAddCharger(true);
+                                  }}
+                                >
+                                  <AddRegular /> Add Charger
+                                </button>
+                                <button
+                                  className="btn-secondary btn-sm"
+                                  style={{ color: '#f87171' }}
+                                  onClick={() => handleDeleteStation(st)}
+                                  disabled={loading}
+                                >
+                                  <DeleteRegular /> Delete
+                                </button>
                               )}
                             </footer>
                           </article>
@@ -1048,13 +1090,16 @@ export default function Operator() {
                                 {conn.status}
                               </span>
                             </td>
-                            <td>
-                              <button
-                                className="btn-secondary btn-xs"
-                                onClick={() => handleToggleMaintenance(conn)}
+                          <td>
+                            <button
+                              className="btn-secondary btn-xs"
+                              onClick={() => handleToggleMaintenance(conn)}
                               >
                                 {conn.status === 'MAINTENANCE' ? 'Restore' : 'Set Maintenance'}
                               </button>
+                            <button className="btn-secondary btn-xs" onClick={() => handleDeleteCharger(conn)} disabled={loading}>
+                              <DeleteRegular /> Delete
+                            </button>
                             </td>
                           </tr>
                         ))
@@ -1564,33 +1609,33 @@ export default function Operator() {
                       <h3>Station Reliability Composite Score</h3>
                       <p>Calculated deterministically per national UEI guidelines.</p>
                     </div>
-                    <div className="op-score-giant">96 / 100</div>
+                    <div className="op-score-giant">{analytics?.reliabilityScore?.composite ?? '—'} / 100</div>
                   </div>
 
                   <div className="op-score-bar">
-                    <div className="op-score-bar-fill" style={{ width: '96%' }} />
+                    <div className="op-score-bar-fill" style={{ width: `${analytics?.reliabilityScore?.composite ?? 0}%` }} />
                   </div>
 
                   <div className="op-score-factors">
                     <div>
                       <span>Charger Uptime (35%)</span>
-                      <strong style={{ color: '#10b981' }}>99.2%</strong>
+                      <strong style={{ color: '#10b981' }}>{analytics?.reliabilityScore?.breakdown?.uptimeScore ?? '—'}%</strong>
                     </div>
                     <div>
                       <span>Session Success (25%)</span>
-                      <strong style={{ color: '#10b981' }}>98.5%</strong>
+                      <strong style={{ color: '#10b981' }}>{analytics?.reliabilityScore?.breakdown?.completionRate ?? '—'}%</strong>
                     </div>
                     <div>
                       <span>Low Cancellation Rate (15%)</span>
-                      <strong style={{ color: '#10b981' }}>97.0%</strong>
+                      <strong style={{ color: '#10b981' }}>{analytics?.reliabilityScore?.breakdown?.lowCancellations ?? '—'}%</strong>
                     </div>
                     <div>
                       <span>Driver Rating (15%)</span>
-                      <strong style={{ color: '#10b981' }}>4.8 / 5.0</strong>
+                      <strong style={{ color: '#10b981' }}>{analytics?.reliabilityScore?.breakdown?.userRating ?? '—'} / 5.0</strong>
                     </div>
                     <div>
                       <span>Telemetry Freshness (10%)</span>
-                      <strong style={{ color: '#10b981' }}>Active (100%)</strong>
+                      <strong style={{ color: '#10b981' }}>{analytics?.reliabilityScore?.breakdown?.telemetryFreshness ?? '—'}%</strong>
                     </div>
                   </div>
                 </div>
@@ -1611,25 +1656,25 @@ export default function Operator() {
                   <div className="op-profile-grid">
                     <div>
                       <span className="op-profile-label">Organization Name</span>
-                      <div className="op-profile-val">{profile?.orgName || 'ChargePoint Network'}</div>
+                      <div className="op-profile-val">{profile?.orgName || profile?.name || 'Not onboarded'}</div>
                     </div>
                     <div>
                       <span className="op-profile-label">Legal Entity</span>
-                      <div className="op-profile-val">{profile?.legalName || 'CPO Pvt. Ltd.'}</div>
+                      <div className="op-profile-val">{profile?.legalName || 'Not provided'}</div>
                     </div>
                     <div>
                       <span className="op-profile-label">Govt Approval Status</span>
                       <div className="op-profile-val" style={{ color: '#10b981', fontWeight: 800 }}>
-                        {profile?.govtApprovalStatus || 'APPROVED'}
+                        {profile?.govtApprovalStatus || 'PENDING ONBOARDING'}
                       </div>
                     </div>
                     <div>
                       <span className="op-profile-label">Govt Certification ID</span>
-                      <div className="op-profile-val">{profile?.govtApprovalNumber || 'BEE-CPO-2025-KA-8891'}</div>
+                      <div className="op-profile-val">{profile?.govtApprovalNumber || 'Not provided'}</div>
                     </div>
                     <div>
                       <span className="op-profile-label">Corporate Registration (CIN)</span>
-                      <div className="op-profile-val">{profile?.registrationNumber || 'CIN-U31909KA2023PTC176543'}</div>
+                      <div className="op-profile-val">{profile?.registrationNumber || 'Not provided'}</div>
                     </div>
                     <div>
                       <span className="op-profile-label">Primary Contact</span>

@@ -17,6 +17,8 @@ import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
 import './Onboarding.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
+
 const driverFeatures = [
   { icon: <MapRegular />, text: 'Find charging stations near you on the map' },
   { icon: <CalendarRegular />, text: 'Book time slots & skip the queue' },
@@ -37,6 +39,9 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState(null);
   const [error, setError] = useState('');
+  const [operatorDetails, setOperatorDetails] = useState({
+    orgName: '', legalName: '', contactPhone: '', address: '', city: '', state: '', registrationNumber: '', govtApprovalNumber: ''
+  });
 
   const handleContinue = async () => {
     if (step === 1) {
@@ -48,7 +53,18 @@ export default function Onboarding() {
     // Step 2 — save role
     setError('');
     try {
-      await updateRole(selectedRole);
+      const roleResult = await updateRole(selectedRole);
+      if (selectedRole === 'operator') {
+        const missing = ['orgName', 'legalName', 'contactPhone', 'address', 'city', 'state', 'registrationNumber'].some((key) => !operatorDetails[key].trim());
+        if (missing) throw new Error('Complete all required operator registration fields.');
+        const res = await fetch(`${API_URL}/api/v1/operator/onboard`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${roleResult.token}` },
+          body: JSON.stringify({ ...operatorDetails, contactEmail: user?.email, orgType: 'Private CPO' })
+        });
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(payload.error || payload.message || 'Unable to complete operator onboarding.');
+      }
       navigate(selectedRole === 'operator' ? '/operator' : '/discover');
     } catch (err) {
       setError(err.message);
@@ -177,6 +193,21 @@ export default function Onboarding() {
                   </motion.div>
                 ))}
               </div>
+
+              {selectedRole === 'operator' && (
+                <div className="onboarding__features" style={{ display: 'grid', gap: 10, marginTop: 16 }}>
+                  <input className="form-input" required placeholder="Operating organization name" value={operatorDetails.orgName} onChange={(e) => setOperatorDetails({ ...operatorDetails, orgName: e.target.value })} />
+                  <input className="form-input" required placeholder="Legal entity name" value={operatorDetails.legalName} onChange={(e) => setOperatorDetails({ ...operatorDetails, legalName: e.target.value })} />
+                  <input className="form-input" required placeholder="Contact phone" value={operatorDetails.contactPhone} onChange={(e) => setOperatorDetails({ ...operatorDetails, contactPhone: e.target.value })} />
+                  <input className="form-input" required placeholder="Registered address" value={operatorDetails.address} onChange={(e) => setOperatorDetails({ ...operatorDetails, address: e.target.value })} />
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <input className="form-input" required placeholder="City" value={operatorDetails.city} onChange={(e) => setOperatorDetails({ ...operatorDetails, city: e.target.value })} />
+                    <input className="form-input" required placeholder="State" value={operatorDetails.state} onChange={(e) => setOperatorDetails({ ...operatorDetails, state: e.target.value })} />
+                  </div>
+                  <input className="form-input" required placeholder="Corporate registration number" value={operatorDetails.registrationNumber} onChange={(e) => setOperatorDetails({ ...operatorDetails, registrationNumber: e.target.value })} />
+                  <input className="form-input" placeholder="Government approval number (optional)" value={operatorDetails.govtApprovalNumber} onChange={(e) => setOperatorDetails({ ...operatorDetails, govtApprovalNumber: e.target.value })} />
+                </div>
+              )}
 
               <div className="onboarding__actions">
                 <button

@@ -3,7 +3,7 @@ import { NavigationRegular, SearchRegular, FlashRegular, FilterRegular } from '@
 import MapplsStationMap from '../components/MapplsStationMap';
 import './Discover.css';
 
-const api = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const api = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 const statusClass = (status) => status.toLowerCase().replaceAll('_', '-');
 
 export default function Discover() {

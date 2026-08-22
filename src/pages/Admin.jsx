@@ -14,7 +14,7 @@ import GlowBlob from '../components/GlowBlob';
 import '../components/DataTable.css';
 import './Admin.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 const tabs = [
   { key: 'users', label: 'Users', icon: <PeopleRegular /> },

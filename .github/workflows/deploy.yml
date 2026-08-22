@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_API_URL: ${{ vars.CHARGEGRID_API_URL }}
+          VITE_API_URL: ${{ vars.CHARGEGRID_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io' }}
           VITE_MAPPLS_WEB_KEY: ${{ vars.MAPPLS_WEB_KEY }}
 
       - name: Setup Pages

@@ -16,7 +16,7 @@ import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
 import './Operator.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 const TABS = [
   { key: 'stations', label: 'Stations', icon: <BuildingRegular /> },

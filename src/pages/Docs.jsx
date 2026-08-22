@@ -76,13 +76,13 @@ export default function Docs() {
             {/* Base URL */}
             <div className="docs__base-url glass">
               <span className="docs__base-url-label">Base URL</span>
-              <code>http://localhost:3000</code>
+              <code>{import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io'}</code>
               <button
                 className="docs__copy-btn"
-                onClick={() => handleCopy('http://localhost:3000')}
+                onClick={() => handleCopy(import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io')}
                 title="Copy base URL"
               >
-                {copiedPath === 'http://localhost:3000' ? <CheckmarkRegular /> : <CopyRegular />}
+                {copiedPath === (import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io') ? <CheckmarkRegular /> : <CopyRegular />}
               </button>
             </div>
           </motion.div>

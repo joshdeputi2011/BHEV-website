@@ -128,14 +128,19 @@ export default function Discover() {
 
         let staticList = [];
         let liveList = [];
+        let metaData = null;
+        let stationsData = [];
 
-        // 1. Fetch static BEE dataset
+        // 1. Fetch static BEE dataset (try base path, then direct data path)
         try {
-          const res = await fetch(staticJsonUrl);
+          let res = await fetch(staticJsonUrl);
+          if (!res.ok) {
+            res = await fetch('/data/bee-stations.json');
+          }
           if (res.ok) {
             const data = await res.json();
             staticList = data.stations || data || [];
-            metaData = data.meta;
+            if (data.meta) metaData = data.meta;
           }
         } catch (e) {
           console.warn('Static JSON fetch fallback:', e);

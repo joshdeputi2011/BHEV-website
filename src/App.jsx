@@ -24,6 +24,10 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/find-station" element={<Discover />} />
+          <Route path="/find-stations" element={<Discover />} />
+          <Route path="/map" element={<Discover />} />
+          <Route path="/stations" element={<Discover />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/kiosk" element={<Kiosk />} />
           <Route path="/kiosk/:stationId" element={<Kiosk />} />
@@ -31,6 +35,7 @@ export default function App() {
           <Route path="/charging-point/:stationId" element={<ChargingPoint />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/docs" element={<Docs />} />
+          <Route path="*" element={<Discover />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -1,0 +1,577 @@
+[
+  {
+    "detected_row": 879,
+    "source_line": 2217,
+    "raw": "IOCL Govt. Arunachal Pradesh Leparada Leparada P.O. Basar Dist. West-Siang Arunachal Pradesh 27.983190 27.983190 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 937,
+    "source_line": 2322,
+    "raw": "IOCL Govt. Assam Jorhat Jorhat A.T. Road Tarajan Jorhat Assam 26.781185 26.781185 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 1039,
+    "source_line": 2491,
+    "raw": "IOCL Govt. Assam Jorhat Jorhat Nagabat Jorhat Assam 26.386829 26.386829 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 1048,
+    "source_line": 2502,
+    "raw": "IOCL Govt. Assam Dima Hasao Dima Hasao P.O. Maibong Kalibari Road Dist. Dima Hasao Assam 25.301716 25.301716 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 1086,
+    "source_line": 2575,
+    "raw": "IOCL Govt. Assam Jorhat Jorhat Titabar Jorhat Dist : Jorhat 26.597941 26.597941 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 1424,
+    "source_line": 3290,
+    "raw": "IOCL Govt. Bihar Nawada Nawada Indian Oil Retail Outlet At-Makhar Anchal- Akbarpur Dist-Nawada 24.796778 24.796778 Type-II AC 7.4 7.4 1"
+  },
+  {
+    "detected_row": 1428,
+    "source_line": 3297,
+    "raw": "Bihar Nawada Nawada Indian Oil Retail Outlet At-Rampur Anchal-Pakribarawan Dist-Nawada Type-II AC"
+  },
+  {
+    "detected_row": 1531,
+    "source_line": 3485,
+    "raw": "IOCL Govt. Bihar Madhepura Madhepura Vill-Bishanpur Ps-Alamnagar Dist-Madhepura 16.400000 28.300000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 6392,
+    "source_line": 12890,
+    "raw": "IOCL Govt. Gujarat Surat Surat City Indian Oil Dealer Survey No.978-979B. No 926 Variav- Surat City 21.270757 21.270757 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 7556,
+    "source_line": 15695,
+    "raw": "Haryana Gurugram Gurgaon Dealer: Indian Oil Corporation Limi At Vill.Kadarpur Sector 63A Gurgaon LEV AC Charge point"
+  },
+  {
+    "detected_row": 7560,
+    "source_line": 15708,
+    "raw": "Haryana Gurugram Gurgaon Dealer-Indian Oil Corporation Limit Vill.-Dhunelaon Gurgaon-Sohna Road LEV AC Charge point"
+  },
+  {
+    "detected_row": 7611,
+    "source_line": 15818,
+    "raw": "Haryana Yamunanagar Yamunanagar Indian Oil Petrol Pump Village Aurangabad On Sh06 Tehsil Jagadhari LEV AC Charge point"
+  },
+  {
+    "detected_row": 7627,
+    "source_line": 15853,
+    "raw": "Haryana Yamunanagar Yamunanagar Indian Oil Petrol Pump Village Fatehpur On Jhota Road Block Jagadhari LEV AC Charge point"
+  },
+  {
+    "detected_row": 7679,
+    "source_line": 15971,
+    "raw": "Haryana Bhiwani Bhiwani Indian Oil Retail Outlet (Ksk) Village-Dariyapurdist-Bhiwani On LEV AC Charge point"
+  },
+  {
+    "detected_row": 7698,
+    "source_line": 16028,
+    "raw": "Haryana Hisar Hisar Indian Oil Retail Outlet (Ksk) Village-Malapurdistrict-Hisar On Malapur- LEV AC Charge point"
+  },
+  {
+    "detected_row": 7713,
+    "source_line": 16074,
+    "raw": "Haryana Rohtak Rohtak Indian Oil Retail Outlet (Ksk) Village-Ritolidistrict-Rohtak On Rohtak-Beri LEV AC Charge point"
+  },
+  {
+    "detected_row": 7749,
+    "source_line": 16176,
+    "raw": "IOCL Govt. Haryana Kurukshetra Kurukshetra Indian Oil Retail Outlet Village Ladwa Bhadson Road Ladwa 29.983066 29.983066 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 7757,
+    "source_line": 16191,
+    "raw": "Haryana Sirsa Sirsa Indian Oil Retail Outlet Village-Bhambhoordistt-Sirsa Between Bhambhoor & LEV AC Charge point"
+  },
+  {
+    "detected_row": 7762,
+    "source_line": 16206,
+    "raw": "Haryana Hisar Hisar Indian Oil Retail Outlet Village-Hansidistrict-Hisar Between Jaat Dharamshala LEV AC Charge point"
+  },
+  {
+    "detected_row": 7771,
+    "source_line": 16234,
+    "raw": "Haryana Hisar Hisar Indian Oil Retail Outlet Village-Mirchpur On Sh-10 Tehsil-Kheri LEV AC Charge point"
+  },
+  {
+    "detected_row": 7773,
+    "source_line": 16240,
+    "raw": "Haryana Rohtak Rohtak Indian Oil Retail Outlet Village-Paradistrict-Rohtak From New Bus Stand To LEV AC Charge point"
+  },
+  {
+    "detected_row": 7789,
+    "source_line": 16288,
+    "raw": "Haryana Gurugram Gurgaon Iocl Dealer Village Pathreri Bilaspur Tavru Ro Mustakil No 45 Killa No 23/2 LEV AC Charge point"
+  },
+  {
+    "detected_row": 7811,
+    "source_line": 16332,
+    "raw": "IOCL Govt. Haryana Gurugram Gurgaon Mustakil No 24 Killa No 19/2/2 19/2/2/1/1 Sec-86 Village Badha 28.407107 28.407107 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 7864,
+    "source_line": 16430,
+    "raw": "IOCL Govt. Haryana Jhajjar Jhajjar Village Badsha Mdr-136 Block Badli 28.514847 28.514847 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 10266,
+    "source_line": 23340,
+    "raw": "Himachal Pradesh Shimla Shimla Lamba Khatal Rohru-Chirgaon Road Tehsil Rohru Distt. Shimla Lamba LEV AC Charge point"
+  },
+  {
+    "detected_row": 10287,
+    "source_line": 23392,
+    "raw": "Himachal Pradesh Hamirpur Hamirpur Village Balute Post Office Lambloo Tehsil& Distt. Hamirpur (H.P.) Village LEV AC Charge point"
+  },
+  {
+    "detected_row": 10403,
+    "source_line": 23640,
+    "raw": "IOCL Govt. Jammu & Kashmir Pulwama Pulwama Indian Oil Petrol Pump \"Padgampora\"Awantipur District Pulwama 33.900200 33.900200 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 10404,
+    "source_line": 23641,
+    "raw": "Jammu & Kashmir Jammu Jammu Indian Oil Petrol Pump Bantalab - Thattar Jammu Bantalab - Thattar Jammu LEV AC Charge point"
+  },
+  {
+    "detected_row": 10407,
+    "source_line": 23648,
+    "raw": "IOCL Govt. Jammu & Kashmir Shopian Shopian Indian Oil Petrol Pump Hergam-Shopian District : Shopian 33.716991 33.716991 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 10460,
+    "source_line": 23715,
+    "raw": "IOCL Govt. Jammu & Kashmir Shopian Shopian Village Wachohallan Tehsil Imam Sahib Dist Shopian 33.739028 33.739028 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 11954,
+    "source_line": 27027,
+    "raw": "IOCL Govt. Karnataka Belagavi Belgaum Gokak Falls Road Sy. No.220/1A/1 Gokak Falls Road Tq. Gokak 16.165190 16.165190 Type-II AC 7.4 7.4 1"
+  },
+  {
+    "detected_row": 12248,
+    "source_line": 27556,
+    "raw": "IOCL Govt. Karnataka Chitradurga Chitradurga Indianoil Dealers Sy.No.10 Pilali Village Hiriyur Taluk 13.753412 13.753412 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 12266,
+    "source_line": 27591,
+    "raw": "Karnataka Davanagere Davangere Indianoil Dealers Sy.No.44/1B Khata No.657 Tyavanagi Vill Channagiri Tq LEV AC Charge point"
+  },
+  {
+    "detected_row": 12280,
+    "source_line": 27625,
+    "raw": "Karnataka Koppal Koppal Indianoil Dealers Sy.No.98/3 Hosakera Village Gangavathi - Singanal Road LEV AC Charge point"
+  },
+  {
+    "detected_row": 12482,
+    "source_line": 27983,
+    "raw": "IOCL Govt. Karnataka Bidar Bidar Sy. No. 111/3 Nirgudi Village Basavakalyan Taluk Bidar District 17.793229 17.793229 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 12515,
+    "source_line": 28033,
+    "raw": "IOCL Govt. Karnataka Bidar Bidar Sy.No.125 Partkadwad Village Bagdal Hobli Bidar Taluk & District 17.807237 17.807237 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 13021,
+    "source_line": 28714,
+    "raw": "Karnataka Bengaluru Urban Bangalore Bhuvaneshwari Nagar LEV DC Charge Point"
+  },
+  {
+    "detected_row": 13112,
+    "source_line": 28990,
+    "raw": "Karnataka Bengaluru Urban Bangalore Kengeri LEV DC Charge Point"
+  },
+  {
+    "detected_row": 13113,
+    "source_line": 28993,
+    "raw": "Karnataka Bengaluru Urban Bangalore Kengeri LEV DC Charge Point"
+  },
+  {
+    "detected_row": 18734,
+    "source_line": 46185,
+    "raw": "Karnataka Dakshina Kannada Mangaluru దంఙ఻పౄఔబఽ\u0003\u0010@MF@KTQT\u0003\u0017@KTJ\u0003\u0007@JRGHM@\u0003\u000e@MM@C@\u0003\u0007HRSQHBS\u0003\u000e@QM@S@J@ 12.925439 LEV AC Charge point"
+  },
+  {
+    "detected_row": 22831,
+    "source_line": 54544,
+    "raw": "IOCL Govt. Maharashtra Sindhudurg Sindhudurg Asalade Tal- Kankavali Dist- Sindhudurg Maharashtra 16.387844 16.387844 Type-II AC 7.4 7.4 1"
+  },
+  {
+    "detected_row": 22865,
+    "source_line": 54589,
+    "raw": "IOCL Govt. Maharashtra Ahilyanagar Ahmadnagar Gat No 114/5 Village Ranjankhol Taluka Rahata 19.621193 19.621193 Type-II AC 7.4 7.4 1"
+  },
+  {
+    "detected_row": 22887,
+    "source_line": 54620,
+    "raw": "IOCL Govt. Maharashtra Pune Pune Gat No. 1400/1 Village Markal Taluka Khed District Pune 18.672974 18.672974 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 22907,
+    "source_line": 54642,
+    "raw": "IOCL Govt. Maharashtra Ahilyanagar Ahmadnagar Gat No. 694 Village Loni Khurd Taluka Rahata 19.590153 19.590153 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 22923,
+    "source_line": 54659,
+    "raw": "IOCL Govt. Maharashtra Pune Pune Gat No.1718/2 Village Shelgaon Taluka Indapur Pune 18.109354 18.109354 Type-II AC 7.4 7.4 1"
+  },
+  {
+    "detected_row": 28407,
+    "source_line": 66438,
+    "raw": "Odisha Kendrapara Kendrapara At Balia Ps Pattamunbdai Pattamundai Rajnagar Road Dist. Kendrapara LEV AC Charge point"
+  },
+  {
+    "detected_row": 28434,
+    "source_line": 66471,
+    "raw": "IOCL Govt. Odisha Cuttack Cuttack At- Mahalpada Po- Kakhadi Ps- Choudwar Dist- Cuttack 20.512944 20.512944 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28435,
+    "source_line": 66472,
+    "raw": "IOCL Govt. Odisha Cuttack Cuttack At Malisahi Alasua Po Baideswar Via Kalapathar Dist Cuttack 20.341901 20.341901 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28445,
+    "source_line": 66486,
+    "raw": "IOCL Govt. Odisha Cuttack Cuttack At- Umar Po- Jhadeswarpur Via- Nischinta Koile Dist- Cuttack 20.518856 20.518856 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28453,
+    "source_line": 66496,
+    "raw": "IOCL Govt. Odisha Sundargarh Sundargarh At/Po- Bhoipali Ps/Via - Bargaon Dist-Sundergarh Odisha 22.162753 22.162753 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28515,
+    "source_line": 66578,
+    "raw": "IOCL Govt. Odisha Kendujhar Keonjhar At: Nh-6 Khireitangiri Po: Khireitangiri Dist: Keonjhar 21.715114 21.715114 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28518,
+    "source_line": 66582,
+    "raw": "IOCL Govt. Odisha Kendujhar Keonjhar At-Arsala Dist- Keonjhar Orissa 21.849665 21.849665 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28522,
+    "source_line": 66590,
+    "raw": "Odisha Kendujhar Keonjhar At-Balda Po-Bamebari Ps-Bamebari Dist-Keonjhar Odisha Pin-758086 LEV AC Charge point"
+  },
+  {
+    "detected_row": 28557,
+    "source_line": 66653,
+    "raw": "IOCL Govt. Odisha Rayagada Rayagada At-Khurigaon Ps- Kashipur Dist- Rayagada Odisha Pin-765015 19.329821 19.329821 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28595,
+    "source_line": 66720,
+    "raw": "IOCL Govt. Odisha Cuttack Cuttack Bentapada Athagarh Dist. Cuttack 20.495292 20.495292 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28608,
+    "source_line": 66736,
+    "raw": "IOCL Govt. Odisha Kendujhar Keonjhar Gondijoda Po-Suakati Ps-Sadardist-Keonjhar 21.557112 21.557112 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28622,
+    "source_line": 66768,
+    "raw": "Odisha Kendujhar Keonjhar Indian Oil Retail Outlet At/Po-Keonjhar Ps- Sadar Town Dist-Keonjhar Odisha LEV AC Charge point"
+  },
+  {
+    "detected_row": 28654,
+    "source_line": 66847,
+    "raw": "IOCL Govt. Odisha Dhenkanal Dhenkanal Kasiadihi Ps Dhenkanal Sadar Tahsil Odapada Dist. Dhenkanal 20.697867 20.697867 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28700,
+    "source_line": 66899,
+    "raw": "IOCL Govt. Odisha Jajapur Jajpur Rudrapur P. S. Binjharpur Dist. Jajpur 20.709942 20.709942 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28710,
+    "source_line": 66911,
+    "raw": "IOCL Govt. Odisha Cuttack Cuttack Sundargaon Tahsil Kantapada Dist Cuttack 20.275133 20.275133 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 28713,
+    "source_line": 66914,
+    "raw": "IOCL Govt. Odisha Jagatsinghpur Jagatsinghpur Tarajanga On Sh12 Ps Tirtol Dist. Jagatsinghpur 20.305959 20.305959 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29224,
+    "source_line": 68126,
+    "raw": "IOCL Govt. Punjab Hoshiarpur Hoshiarpur Indian Oil Petrol Pump Hussianpur Guru Tehsil Hariana 31.598359 31.598359 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29257,
+    "source_line": 68175,
+    "raw": "IOCL Govt. Punjab Hoshiarpur Hoshiarpur Indian Oil Petrol Pump Village Burobari Tehsil Garhshankar 31.385345 31.385345 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29292,
+    "source_line": 68242,
+    "raw": "IOCL Govt. Punjab Ferozepur Firozpur Indian Oil Petrol Pump Zira - Talwandi Road Talwandi Bhai 30.881451 30.881451 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29322,
+    "source_line": 68302,
+    "raw": "IOCL Govt. Punjab Hoshiarpur Hoshiarpur Ioc Petrol Pumpg.T.Road Dasuya Distt.Hoshiarpur 01883 286116 31.805321 31.805321 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29348,
+    "source_line": 68342,
+    "raw": "IOCL Govt. Punjab Bathinda Bathinda North Estate 100 Ft Road Bathinda 30.400000 32.500000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29363,
+    "source_line": 68361,
+    "raw": "IOCL Govt. Punjab Mansa Mansa Samoan Tehsil Bhikhi Distt. Mansa 31.200000 32.200000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29373,
+    "source_line": 68373,
+    "raw": "IOCL Govt. Punjab Bathinda Bathinda Transport Nagar Bathinda Distt. Bathinda 30.400000 35.300000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29441,
+    "source_line": 68453,
+    "raw": "IOCL Govt. Punjab Gurdaspur Gurdaspur Village Langerkot Hargobindpur Road Tehsil Gurdaspur 31.921200 31.921200 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29452,
+    "source_line": 68464,
+    "raw": "IOCL Govt. Punjab Bathinda Bathinda Village Mehraj Block Rampura Tehsil Rampura 20.002000 20.300000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29458,
+    "source_line": 68471,
+    "raw": "IOCL Govt. Punjab Gurdaspur Gurdaspur Village- Paniar Tehsil Dinanagar District Gurdaspur 32.088228 32.088228 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29459,
+    "source_line": 68472,
+    "raw": "IOCL Govt. Punjab Ferozepur Firozpur Village Panje Ke Block Guruharsahai Tehsil Guruharsahai 30.600000 32.200000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 29471,
+    "source_line": 68487,
+    "raw": "IOCL Govt. Punjab Gurdaspur Gurdaspur Village Sekhwan District Gurdaspur Punjab 31.861438 31.861438 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30129,
+    "source_line": 69950,
+    "raw": "IOCL Govt. Rajasthan Dholpur Dhaulpur Bayana Road Baseri - 328022 Indian Oil Dealer Distt. Dholpur (Raj.) 26.743904 26.743904 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30175,
+    "source_line": 70025,
+    "raw": "IOCL Govt. Rajasthan Dausa Dausa Indian Oil Petrol Petrol Pump Sikandra To Kalwar Road Vill.- Gilari 26.907438 26.907438 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30188,
+    "source_line": 70056,
+    "raw": "Rajasthan Jaipur Jaipur Indian Oil Petrol Pump Chomu On Sikar Road Opp Seva Yatan Hospital LEV AC Charge point"
+  },
+  {
+    "detected_row": 30202,
+    "source_line": 70099,
+    "raw": "Rajasthan Bundi Bundi Indian Oil Petrol Pump Kh No. 466/56 Village -Chamavali Tehsil -Indragarh LEV AC Charge point"
+  },
+  {
+    "detected_row": 30252,
+    "source_line": 70232,
+    "raw": "Rajasthan Dudu Dudu Indian Oil Petrol Pump Nh-48(Oldnh-8) Village- Gidani Tehsil- Mauzmabad LEV AC Charge point"
+  },
+  {
+    "detected_row": 30255,
+    "source_line": 70239,
+    "raw": "Rajasthan Bhilwara Bhilwara Indian Oil Petrol Pump Nh-758 Village-Khadela Tehsil-Banera Distt-Bhilwara LEV AC Charge point"
+  },
+  {
+    "detected_row": 30273,
+    "source_line": 70292,
+    "raw": "Rajasthan Udaipur Udaipur Indian Oil Petrol Pump Sh-32 Village-Devgao Tehsil-Salumbe Distt-Udaipur LEV AC Charge point"
+  },
+  {
+    "detected_row": 30329,
+    "source_line": 70407,
+    "raw": "IOCL Govt. Rajasthan Nagaur Nagaur Indian Oil Petrol Pump Village Gular Teh.Parbatsardistrict Nagaur 26.878360 26.878360 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30366,
+    "source_line": 70482,
+    "raw": "Rajasthan Sikar Sikar Indian Oil Petrol Pump Village- Phutala Tehsil-Srimadhopu District- Sikar LEV AC Charge point"
+  },
+  {
+    "detected_row": 30385,
+    "source_line": 70524,
+    "raw": "Rajasthan Jhunjhunu Jhunjhunun Indian Oil Petrol Pump Village-Bhagera Teh-Nawalgarhdist-Jhunjhunu LEV AC Charge point"
+  },
+  {
+    "detected_row": 30388,
+    "source_line": 70530,
+    "raw": "Rajasthan Udaipur Udaipur Indian Oil Petrol Pump Village-Bokhara Ranakpur Road Sh-32 Distt-Udaipur LEV AC Charge point"
+  },
+  {
+    "detected_row": 30400,
+    "source_line": 70566,
+    "raw": "Rajasthan Jaipur Jaipur Indian Oil Petrol Pump Village-Kanarpura Tehsil-Chomu Dist-Jaipur LEV AC Charge point"
+  },
+  {
+    "detected_row": 30436,
+    "source_line": 70642,
+    "raw": "Rajasthan Bhilwara Bhilwara Indianoil Petrol Pump Village-Barundani Tehsil-Mandalgarh Distt-Bhilwara LEV AC Charge point"
+  },
+  {
+    "detected_row": 30567,
+    "source_line": 70855,
+    "raw": "Rajasthan Bikaner Bikaner Murba No 18/57Kila No13/2/0.218/1 Village Chak -1 Kmtehsil Chhattar LEV AC Charge point"
+  },
+  {
+    "detected_row": 30658,
+    "source_line": 70998,
+    "raw": "IOCL Govt. Rajasthan Jaisalmer Jaisalmer Village - Badi Dhani Tehsil - Bap Jodhpur 27.329880 27.329880 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30662,
+    "source_line": 71004,
+    "raw": "Rajasthan Jaipur Jaipur Village Biharipura Near Tunga On Dausa Tunga Road Tehsil Bassi District LEV AC Charge point"
+  },
+  {
+    "detected_row": 30665,
+    "source_line": 71009,
+    "raw": "IOCL Govt. Rajasthan Ganganagar Ganganagar Village - Chak 10 L.L. Tehsil - Sriganganagar Sriganganagar 29.816470 29.816470 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30677,
+    "source_line": 71021,
+    "raw": "IOCL Govt. Rajasthan Barmer Barmer Village - J.K. Mudhansar Tehsil - Gudamalani Barmer 25.102806 25.102806 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30685,
+    "source_line": 71029,
+    "raw": "IOCL Govt. Rajasthan Jodhpur Jodhpur Village - Murkasni Tehsil - Bilara Jodhpur Rural 26.334910 26.334910 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 30688,
+    "source_line": 71032,
+    "raw": "IOCL Govt. Rajasthan Jodhpur Jodhpur Village - Panchala Khurd Tehsil - Tinwari Jodhpur Rural 26.612047 26.612047 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 32251,
+    "source_line": 76404,
+    "raw": "Tamil Nadu Tirupathur Tirupathur Hp Petrol Pump Bharat AC-001"
+  },
+  {
+    "detected_row": 32364,
+    "source_line": 76627,
+    "raw": "HPCL Govt. Tamil Nadu Tiruchirappalli Tiruchirappalli Tiruchirappalli 10.806500 10.806500 Type-II AC 7 7 1"
+  },
+  {
+    "detected_row": 32733,
+    "source_line": 77331,
+    "raw": "IOCL Govt. Tamil Nadu Chengalpattu Chengalpattu Indianoil Dealer S.No.250/1Meyur Village Madurantagam Taluk 12.669417 12.669417 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 35506,
+    "source_line": 84274,
+    "raw": "IOCL Govt. Tripura Gomati Gomati Nh-44 P.O. Udaipur South Tripura Gomati 23.528912 23.528912 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36044,
+    "source_line": 85221,
+    "raw": "IOCL Govt. Uttar Pradesh Siddharthnagar Sidharthnagar \"Pipra\" Siddarthnagar. Dist-Siddharth Nagar 27.157743 27.157743 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36103,
+    "source_line": 85311,
+    "raw": "IOCL Govt. Uttar Pradesh Siddharthnagar Sidharthnagar Barhani Barhani Dist.Siddharth Nagar 27.492644 27.492644 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36382,
+    "source_line": 85819,
+    "raw": "IOCL Govt. Uttar Pradesh Siddharthnagar Sidharthnagar Ioc Dealer Belwa Lagunahi Post.Daldala Distt.Siddharth Nagar 27.082441 27.082441 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36622,
+    "source_line": 86212,
+    "raw": "Uttar Pradesh Mathura Mathura Shriji Bankey Bihari Filling Statio Khasra 963 Village Ole Tehsil Mat LEV AC Charge point"
+  },
+  {
+    "detected_row": 36867,
+    "source_line": 86500,
+    "raw": "IOCL Govt. Uttar Pradesh Shahjahanpur Shahjahanpur Village Alampur Pipariya Taluka Powayan District Shahjahanpur 28.232138 28.232138 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36904,
+    "source_line": 86545,
+    "raw": "IOCL Govt. Uttar Pradesh Sambhal Sambhal Village Bholeshwar Sambhal Town Tehsilsambhal 28.611439 28.611439 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36915,
+    "source_line": 86559,
+    "raw": "IOCL Govt. Uttar Pradesh Firozabad Firozabad Village Chamroli Tehsil Shikohabad Distt Firozabad 27.083527 27.083527 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 36925,
+    "source_line": 86570,
+    "raw": "Uttar Pradesh Bara Banki Barabanki Village Dadra Bet Kms 37-40 On Nh 27 On Rhs While Going Towrads LEV AC Charge point"
+  },
+  {
+    "detected_row": 36929,
+    "source_line": 86577,
+    "raw": "IOCL Govt. Uttar Pradesh Shahjahanpur Shahjahanpur Village Dhakiya Khurd Tehsil Powayan Shahjahanpur 28.067000 28.067000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 37022,
+    "source_line": 86688,
+    "raw": "IOCL Govt. Uttar Pradesh Sambhal Sambhal Village Madala Fatehpur Tehsil Sambhal Sambhal Joya Road 28.663134 28.663134 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 37081,
+    "source_line": 86769,
+    "raw": "IOCL Govt. Uttar Pradesh Rampur Rampur Village Raipur Rampur To Shahabad Marg District Rampur 28.992000 28.992000 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 37198,
+    "source_line": 86910,
+    "raw": "IOCL Govt. Uttar Pradesh Azamgarh Azamgarh Vill-Bhataura Taluka-Sadar Dist-Azamgarh 26.054180 26.054180 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 37218,
+    "source_line": 86936,
+    "raw": "IOCL Govt. Uttar Pradesh Azamgarh Azamgarh Vill-Molnapur Ahmad Baksh Taluka-Martinganj Distt-Azamgarh 25.982131 25.982131 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 38352,
+    "source_line": 90631,
+    "raw": "IOCL Govt. West Bengal Hooghly Hooghly Hooghly Filling Station Chanditala Hooghly Sh 15 22.694532 22.694532 Type-II AC 7.4 7.4 1"
+  },
+  {
+    "detected_row": 38487,
+    "source_line": 90815,
+    "raw": "IOCL Govt. West Bengal Paschim Medinipur Paschim Medinipur Kiaboni Garhbeta Paschim Medinipur 22.789857 22.789857 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 38512,
+    "source_line": 90849,
+    "raw": "IOCL Govt. West Bengal Cooch Behar Cooch Bihar N N Roy Road Coochbehar Pin 736101 26.326009 26.326009 LEV AC Charge point 3.3 3.3 1"
+  },
+  {
+    "detected_row": 38568,
+    "source_line": 90932,
+    "raw": "West Bengal Birbhum Birbhum Plot No: 451(P) 618(P) Khatian No. 982 Mouza: Indragachha J.L.No: 68 LEV AC Charge point"
+  },
+  {
+    "detected_row": 38606,
+    "source_line": 91000,
+    "raw": "IOCL Govt. West Bengal Jhargram Jhargram Sangita Roy Sakhisol Lalgarh 22.590366 22.590366 LEV AC Charge point 3.3 3.3 1"
+  }
+]

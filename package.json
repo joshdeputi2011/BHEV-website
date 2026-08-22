@@ -12,6 +12,8 @@
   "dependencies": {
     "@fluentui/react-icons": "^2.0.338",
     "framer-motion": "^13.1.1",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "mappls-web-maps": "^3.8.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

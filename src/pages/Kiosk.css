@@ -195,6 +195,13 @@
   box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3);
 }
 
+.kiosk-qr-img {
+  width: 200px;
+  height: 200px;
+  display: block;
+  object-fit: contain;
+}
+
 .kiosk-live-session-card {
   width: min(260px, 70vw);
   min-height: 200px;

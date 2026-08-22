@@ -663,6 +663,13 @@
   box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
 }
 
+.op-qr-img {
+  width: 200px;
+  height: 200px;
+  display: block;
+  object-fit: contain;
+}
+
 .op-qr-timer {
   display: flex;
   align-items: center;

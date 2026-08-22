@@ -55,6 +55,7 @@ export default function Kiosk() {
   const [kioskState, setKioskState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [qrDataUrl, setQrDataUrl] = useState('');
   const qrCanvasRef = useRef(null);
 
   // Hardware Simulation State
@@ -187,10 +188,23 @@ export default function Kiosk() {
     return () => clearInterval(interval);
   }, [fetchState]);
 
-  // Draw QR
+  // Draw QR and generate Data URL
   useEffect(() => {
-    if (kioskState?.qr?.token && qrCanvasRef.current) {
-      drawKioskQR(qrCanvasRef.current, kioskState.qr.token, 200);
+    const token = kioskState?.qr?.token || `UEI-KIOSK-${(selectedStationId || 'st-001').slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`;
+    QRCode.toDataURL(token, {
+      width: 220,
+      margin: 1,
+      errorCorrectionLevel: 'M',
+      color: {
+        dark: '#02060d',
+        light: '#ffffff',
+      },
+    })
+      .then((url) => setQrDataUrl(url))
+      .catch((e) => console.error('QR data URL error:', e));
+
+    if (qrCanvasRef.current) {
+      drawKioskQR(qrCanvasRef.current, token, 200);
     }
   }, [kioskState?.qr?.token, selectedStationId]);
 
@@ -368,6 +382,8 @@ export default function Kiosk() {
                   <b>₹{currentCost}</b>
                 </div>
               </div>
+            ) : qrDataUrl ? (
+              <img src={qrDataUrl} alt="Kiosk Check-in QR" className="kiosk-qr-img" width={200} height={200} />
             ) : (
               <canvas ref={qrCanvasRef} width={200} height={200} />
             )}

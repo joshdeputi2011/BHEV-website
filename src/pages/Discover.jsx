@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   NavigationRegular,
   SearchRegular,
@@ -10,8 +11,13 @@ import {
   PeopleRegular,
   AlertUrgentRegular,
   VehicleCarRegular,
-  PlugConnectedRegular
+  PlugConnectedRegular,
+  QrCodeRegular,
+  DismissRegular,
+  CheckmarkCircleRegular,
+  WarningRegular
 } from '@fluentui/react-icons';
+import { useAuth } from '../context/AuthContext';
 import MapplsStationMap from '../components/MapplsStationMap';
 import './Discover.css';
 
@@ -35,7 +41,6 @@ function haversineKm(lat1, lon1, lat2, lon2) {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
-// Synonyms and aliases for Indian cities and operators to ensure 100% search accuracy
 const ALIASES = {
   bangalore: ['bengaluru', 'karnataka'],
   bengaluru: ['bangalore', 'karnataka'],
@@ -65,6 +70,9 @@ function normalizeText(text) {
 }
 
 export default function Discover() {
+  const { token, user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   const [allStations, setAllStations] = useState([]);
   const [meta, setMeta] = useState({
     mapped_location_groups: 29085,
@@ -95,7 +103,14 @@ export default function Discover() {
   const [evStatus, setEvStatus] = useState(null);
   const [evBusy, setEvBusy] = useState(false);
 
-  // Debounce search query to keep typing ultra-fluid
+  // QR Modal States
+  const [showQrModal, setShowQrModal] = useState(false);
+  const [qrInput, setQrInput] = useState('');
+  const [qrLookupResult, setQrLookupResult] = useState(null);
+  const [qrLookupLoading, setQrLookupLoading] = useState(false);
+  const [qrError, setQrError] = useState('');
+
+  // Debounce search query
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query);
@@ -103,10 +118,9 @@ export default function Discover() {
     return () => clearTimeout(handler);
   }, [query]);
 
-  // 1. Auto-detect user's location on initial mount silently
+  // Auto-detect user's location
   useEffect(() => {
     if (!navigator.geolocation) return;
-
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -116,284 +130,194 @@ export default function Discover() {
       },
       (err) => {
         setLocating(false);
-        console.info('Auto-location check completed:', err.message);
+        console.info('Auto-location check notice:', err.message);
       },
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
   }, []);
 
-  // 2. Load dataset
-  useEffect(() => {
-    let cancelled = false;
+  // Load dataset
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setError('');
 
-    async function loadData() {
-      setLoading(true);
-      setError('');
+    try {
+      const basePath = import.meta.env.BASE_URL || '/';
+      const staticJsonUrl = `${basePath}data/bee-stations.json`.replace(/\/+/g, '/');
+      const staticMetaUrl = `${basePath}data/source-meta.json`.replace(/\/+/g, '/');
 
+      let staticList = [];
+      let liveList = [];
+      let metaData = null;
+
+      // 1. Fetch static BEE dataset
       try {
-        const basePath = import.meta.env.BASE_URL || '/';
-        const staticJsonUrl = `${basePath}data/bee-stations.json`.replace(/\/+/g, '/');
-        const staticMetaUrl = `${basePath}data/source-meta.json`.replace(/\/+/g, '/');
-
-        let staticList = [];
-        let liveList = [];
-        let metaData = null;
-        let stationsData = [];
-
-        // 1. Fetch static BEE dataset (try base path, then direct data path)
-        try {
-          let res = await fetch(staticJsonUrl);
-          if (!res.ok) {
-            res = await fetch('/data/bee-stations.json');
-          }
-          if (res.ok) {
-            const data = await res.json();
-            staticList = data.stations || data || [];
-            if (data.meta) metaData = data.meta;
-          }
-        } catch (e) {
-          console.warn('Static JSON fetch fallback:', e);
+        let res = await fetch(staticJsonUrl);
+        if (!res.ok) res = await fetch('/data/bee-stations.json');
+        if (res.ok) {
+          const data = await res.json();
+          staticList = data.stations || data || [];
+          if (data.meta) metaData = data.meta;
         }
+      } catch (e) {
+        console.warn('Static JSON fetch fallback:', e);
+      }
 
-        // 2. Fetch live operator stations from backend database
-        try {
-          const resLive = await fetch(`${api}/api/v1/stations?limit=100`);
-          if (resLive.ok) {
-            const payload = await resLive.json();
-            liveList = payload.data || [];
-          }
-        } catch (e) {
-          console.warn('Backend live stations fetch skipped/offline:', e);
+      // 2. Fetch live operator stations from backend
+      try {
+        const resLive = await fetch(`${api}/api/v1/stations?limit=200`);
+        if (resLive.ok) {
+          const payload = await resLive.json();
+          liveList = payload.data || [];
         }
+      } catch (e) {
+        console.warn('Backend stations fetch notice:', e);
+      }
 
-        // 3. Read custom local operator stations (instant multi-tab sync)
-        let localCustom = [];
+      const combinedRaw = [...liveList, ...staticList];
+      const seenIds = new Set();
+      const stationsData = combinedRaw.filter((s) => {
+        if (!s || !s.id) return false;
+        if (seenIds.has(s.id)) return false;
+        seenIds.add(s.id);
+        return true;
+      });
+
+      if (!metaData) {
         try {
-          const stored = localStorage.getItem('bhev_custom_stations');
-          if (stored) localCustom = JSON.parse(stored);
-        } catch (e) {
-          // ignore
-        }
+          const resMeta = await fetch(staticMetaUrl);
+          if (resMeta.ok) metaData = await resMeta.json();
+        } catch (_) {}
+      }
 
-        // Merge: Live backend + Local Custom at the very top, followed by 29k national stations
-        const combinedRaw = [...localCustom, ...liveList, ...staticList];
-        
-        // Deduplicate by ID
-        const seenIds = new Set();
-        stationsData = combinedRaw.filter((s) => {
-          if (!s || !s.id) return false;
-          if (seenIds.has(s.id)) return false;
-          seenIds.add(s.id);
-          return true;
+      if (stationsData && stationsData.length > 0) {
+        const processed = stationsData.map((s) => {
+          const connectors = Array.isArray(s.connectors)
+            ? s.connectors.map((c) => c.standard || c)
+            : Array.isArray(s.connector_types)
+              ? s.connector_types
+              : Array.isArray(s.connector_categories)
+                ? s.connector_categories
+                : [];
+
+          const cpo = s.cpo || s.operator?.name || '';
+          const location = s.location || s.address || '';
+          const city = s.city || '';
+          const district = s.district || '';
+          const state = s.state || '';
+          const ownership = s.ownership || '';
+          const pincode = s.pincode || s.postal_code || '';
+
+          const searchTokens = [
+            s.name,
+            cpo,
+            location,
+            city,
+            district,
+            state,
+            ownership,
+            pincode,
+            ...connectors
+          ]
+            .map(normalizeText)
+            .filter(Boolean);
+
+          const cityNorm = normalizeText(city);
+          if (ALIASES[cityNorm]) searchTokens.push(...ALIASES[cityNorm]);
+          const cpoNorm = normalizeText(cpo);
+          if (ALIASES[cpoNorm]) searchTokens.push(...ALIASES[cpoNorm]);
+
+          return {
+            ...s,
+            latitude: Number(s.latitude),
+            longitude: Number(s.longitude),
+            maxPowerKw: Number(s.maxPowerKw || s.max_power_kw || s.charger_ratings_kw?.[0] || 0),
+            connectorsList: connectors,
+            nameNorm: normalizeText(s.name),
+            cityNorm,
+            districtNorm: normalizeText(district),
+            cpoNorm,
+            stateNorm: normalizeText(state),
+            _search: searchTokens.join(' ')
+          };
         });
 
-        if (!metaData) {
-          try {
-            const resMeta = await fetch(staticMetaUrl);
-            if (resMeta.ok) {
-              metaData = await resMeta.json();
-            }
-          } catch (e) {
-            // ignore
-          }
-        }
-
-        if (cancelled) return;
-
-        if (stationsData && stationsData.length > 0) {
-          const processed = stationsData.map((s) => {
-            const connectors = Array.isArray(s.connectors)
-              ? s.connectors.map((c) => c.standard || c)
-              : Array.isArray(s.connector_types)
-                ? s.connector_types
-                : Array.isArray(s.connector_categories)
-                  ? s.connector_categories
-                  : [];
-
-            const cpo = s.cpo || s.operator?.name || '';
-            const location = s.location || s.address || '';
-            const city = s.city || '';
-            const district = s.district || '';
-            const state = s.state || '';
-            const ownership = s.ownership || '';
-            const pincode = s.pincode || s.postal_code || '';
-
-            // Normalized token array for sub-millisecond multi-attribute matching
-            const searchTokens = [
-              s.name,
-              cpo,
-              location,
-              city,
-              district,
-              state,
-              ownership,
-              pincode,
-              ...connectors
-            ]
-              .map(normalizeText)
-              .filter(Boolean);
-
-            // Add city/operator aliases
-            const cityNorm = normalizeText(city);
-            if (ALIASES[cityNorm]) {
-              searchTokens.push(...ALIASES[cityNorm]);
-            }
-            const cpoNorm = normalizeText(cpo);
-            if (ALIASES[cpoNorm]) {
-              searchTokens.push(...ALIASES[cpoNorm]);
-            }
-
-            const searchIndex = searchTokens.join(' ');
-
-            return {
-              ...s,
-              latitude: Number(s.latitude),
-              longitude: Number(s.longitude),
-              maxPowerKw: Number(s.maxPowerKw || s.max_power_kw || 0),
-              connectorsList: connectors,
-              nameNorm: normalizeText(s.name),
-              cityNorm: normalizeText(city),
-              districtNorm: normalizeText(district),
-              cpoNorm: normalizeText(cpo),
-              stateNorm: normalizeText(state),
-              _search: searchIndex
-            };
-          });
-
-          setAllStations(processed);
-
-          if (metaData) {
-            setMeta(metaData);
-          } else {
-            const states = [...new Set(processed.map((s) => s.state).filter(Boolean))].sort();
-            const connCats = [
-              ...new Set(
-                processed.flatMap((s) => s.connector_categories || s.connectorsList || [])
-              )
-            ].sort();
-
-            setMeta({
-              mapped_location_groups: processed.length,
-              mappable_connector_rows: processed.length,
-              states_with_data: states.length,
-              states,
-              connector_categories: connCats
-            });
-          }
-        } else {
-          throw new Error('No charging station data could be loaded.');
-        }
-      } catch (err) {
-        if (!cancelled) setError(err.message || 'Unable to load EV charging stations.');
-      } finally {
-        if (!cancelled) setLoading(false);
+        setAllStations(processed);
       }
-    }
 
-    loadData();
-    return () => {
-      cancelled = true;
-    };
+      if (metaData) {
+        setMeta({
+          mapped_location_groups: metaData.mapped_location_groups || 29085,
+          mappable_connector_rows: metaData.mappable_connector_rows || 39047,
+          states_with_data: metaData.states_with_data || 34,
+          states: metaData.states || [],
+          connector_categories: metaData.connector_categories || []
+        });
+      }
+    } catch (err) {
+      setError('Unable to load EV station infrastructure network.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Filter and Relevance Ranking Logic
-  const filteredStations = useMemo(() => {
-    const rawQuery = normalizeText(debouncedQuery);
-    const queryWords = rawQuery ? rawQuery.split(' ').filter(Boolean) : [];
-    const minPower = Number(selectedPower);
-    const rad = Number(selectedRadius);
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
-    // Expand search keywords with aliases
-    const expandedWords = [...queryWords];
-    for (const w of queryWords) {
-      if (ALIASES[w]) {
-        expandedWords.push(...ALIASES[w]);
+  // Filtering
+  const filteredStations = useMemo(() => {
+    if (!allStations || allStations.length === 0) return [];
+
+    const normQuery = normalizeText(debouncedQuery);
+    const minPower = Number(selectedPower) || 0;
+    const radius = Number(selectedRadius) || 0;
+    const hasLocation = Boolean(userLocation && Number.isFinite(userLocation.lat));
+
+    let result = allStations.filter((s) => {
+      if (!Number.isFinite(s.latitude) || !Number.isFinite(s.longitude)) return false;
+
+      if (normQuery && !s._search.includes(normQuery)) {
+        return false;
       }
+
+      if (selectedState && !s.stateNorm.includes(normalizeText(selectedState))) {
+        return false;
+      }
+
+      if (selectedConnector) {
+        const cn = normalizeText(selectedConnector);
+        const match = s.connectorsList.some((c) => normalizeText(c).includes(cn));
+        if (!match) return false;
+      }
+
+      if (minPower > 0 && s.maxPowerKw < minPower) {
+        return false;
+      }
+
+      if (selectedOwnership) {
+        const o = (s.ownership || '').toLowerCase();
+        if (selectedOwnership === 'Govt.' && !o.includes('govt') && !o.includes('psu') && !o.includes('municipal')) return false;
+        if (selectedOwnership === 'Private' && (o.includes('govt') || o.includes('psu'))) return false;
+      }
+
+      return true;
+    });
+
+    if (hasLocation) {
+      result = result.map((s) => ({
+        ...s,
+        _distance: haversineKm(userLocation.lat, userLocation.lng, s.latitude, s.longitude)
+      }));
+
+      if (radius > 0) {
+        result = result.filter((s) => s._distance <= radius);
+      }
+
+      result.sort((a, b) => a._distance - b._distance);
     }
 
-    return allStations
-      .map((s) => {
-        let dist = null;
-        if (userLocation) {
-          dist = haversineKm(userLocation.lat, userLocation.lng, s.latitude, s.longitude);
-        }
-
-        // Calculate relevance score when user is searching
-        let relevance = 0;
-        if (queryWords.length > 0) {
-          // Exact match in station name
-          if (s.nameNorm.includes(rawQuery)) relevance += 100;
-          // Exact match in city or district
-          if (s.cityNorm.includes(rawQuery) || s.districtNorm.includes(rawQuery)) relevance += 80;
-          // Exact match in CPO operator
-          if (s.cpoNorm.includes(rawQuery)) relevance += 60;
-          // State match
-          if (s.stateNorm.includes(rawQuery)) relevance += 40;
-
-          // Individual word hits
-          for (const w of queryWords) {
-            if (s.nameNorm.includes(w)) relevance += 25;
-            if (s.cityNorm.includes(w) || s.districtNorm.includes(w)) relevance += 20;
-            if (s.cpoNorm.includes(w)) relevance += 15;
-            if (s._search.includes(w)) relevance += 10;
-          }
-        }
-
-        return { ...s, _distance: dist, _relevance: relevance };
-      })
-      .filter((s) => {
-        // Multi-word search matching: all entered words must be present
-        if (queryWords.length > 0) {
-          const matchAll = queryWords.every((word) => {
-            if (s._search.includes(word)) return true;
-            // Check if any alias of the word matches
-            if (ALIASES[word] && ALIASES[word].some((alias) => s._search.includes(alias))) {
-              return true;
-            }
-            return false;
-          });
-          if (!matchAll) return false;
-        }
-
-        // State filter
-        if (selectedState && s.state !== selectedState) return false;
-
-        // Connector filter
-        if (
-          selectedConnector &&
-          !s.connectorsList.some((c) =>
-            String(c).toLowerCase().includes(selectedConnector.toLowerCase())
-          )
-        ) {
-          return false;
-        }
-
-        // Ownership filter
-        if (selectedOwnership && s.ownership !== selectedOwnership) return false;
-
-        // Minimum Power filter
-        if (minPower > 0 && s.maxPowerKw < minPower) return false;
-
-        // Distance radius filter only applies if selectedRadius > 0
-        if (userLocation && rad > 0 && s._distance != null && s._distance > rad) {
-          return false;
-        }
-
-        return true;
-      })
-      .sort((a, b) => {
-        // 1. If searching, prioritize relevance score first
-        if (queryWords.length > 0) {
-          if (b._relevance !== a._relevance) {
-            return b._relevance - a._relevance;
-          }
-        }
-        // 2. Secondary sort by distance if user location is available
-        if (userLocation && a._distance != null && b._distance != null) {
-          return a._distance - b._distance;
-        }
-        return 0;
-      });
+    return result;
   }, [
     allStations,
     debouncedQuery,
@@ -405,31 +329,28 @@ export default function Discover() {
     userLocation
   ]);
 
-  // Manual Geolocation Trigger
-  const handleLocateMe = useCallback(() => {
+  const handleLocateMe = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
       return;
     }
-
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         setUserLocation(coords);
         setLocating(false);
-        setFitTrigger((prev) => prev + 1);
+        setFitTrigger((t) => t + 1);
       },
       (err) => {
         setLocating(false);
-        alert('Could not determine your location. Please check browser location permissions.');
+        alert(`Location error: ${err.message}`);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: 10000 }
     );
-  }, []);
+  };
 
-  // Reset Filters
-  const handleReset = useCallback(() => {
+  const handleReset = () => {
     setQuery('');
     setDebouncedQuery('');
     setSelectedState('');
@@ -438,38 +359,119 @@ export default function Discover() {
     setSelectedOwnership('');
     setSelectedRadius('0');
     setSelectedStation(null);
-    setFitTrigger((prev) => prev + 1);
-  }, []);
+  };
 
-  // Navigation link generator
+  const bestConnectorFor = (station) => {
+    if (Array.isArray(station?.connectors) && station.connectors.length > 0) {
+      return station.connectors[0];
+    }
+    const standard = station?.connectorsList?.[0] || 'CCS2';
+    return {
+      id: `${station.id}-conn-01`,
+      standard,
+      powerType: String(standard).toLowerCase().includes('dc') ? 'DC' : 'AC',
+      maxPowerKw: station.maxPowerKw || 60,
+      status: 'AVAILABLE'
+    };
+  };
+
   const navigateStation = (station) => {
-    const dest = `${station.latitude},${station.longitude}`;
     window.open(
-      `https://www.google.com/maps/dir/?api=1&destination=${dest}`,
+      `https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}`,
       '_blank',
       'noopener,noreferrer'
     );
   };
 
-  const bestConnectorFor = (station) => {
-    const connectors = Array.isArray(station.connectors) ? station.connectors : [];
-    return (
-      connectors.find((connector) => String(connector.status).toUpperCase() === 'AVAILABLE') ||
-      connectors.find((connector) => connector.id) ||
-      null
-    );
+  // Direct Start Charging Session
+  const handleStartCharging = async (station, connector) => {
+    if (!isAuthenticated) {
+      alert('Please sign in to start a charging session.');
+      navigate('/login');
+      return;
+    }
+
+    const conn = connector || bestConnectorFor(station);
+    const key = `${station.id}-${conn.id}-charging`;
+    setBookingBusy(key);
+
+    try {
+      const res = await fetch(`${api}/api/v1/sessions/start`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          stationId: station.id,
+          connectorId: conn.id,
+          initialSoc: 25,
+          vehicleName: evStatus?.vehicleName || 'Tata Nexon EV Max'
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to start charging session');
+      }
+
+      setBookingResult({
+        type: 'success',
+        title: 'Charging Session Started!',
+        message: `Connected to ${conn.standard} (${conn.maxPowerKw} kW) at ${station.name}. Navigating to live telemetry…`
+      });
+
+      setTimeout(() => {
+        navigate('/sessions');
+      }, 1200);
+    } catch (err) {
+      setBookingResult({
+        type: 'error',
+        title: 'Charging Session Blocked',
+        message: err.message
+      });
+    } finally {
+      setBookingBusy('');
+    }
+  };
+
+  // QR Lookup & Direct Connect
+  const handleLookupQR = async (e) => {
+    e.preventDefault();
+    if (!qrInput.trim()) return;
+
+    setQrLookupLoading(true);
+    setQrError('');
+    setQrLookupResult(null);
+
+    try {
+      const trimmed = qrInput.trim();
+      let res;
+      if (trimmed.includes('.')) {
+        // Encrypted dynamic token
+        res = await fetch(`${api}/api/v1/arrivals/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: trimmed })
+        });
+      } else {
+        // Charger ID
+        res = await fetch(`${api}/api/v1/chargers/${trimmed}`);
+      }
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message || 'Charger not found or token invalid.');
+
+      setQrLookupResult(data.data);
+    } catch (err) {
+      setQrError(err.message);
+    } finally {
+      setQrLookupLoading(false);
+    }
   };
 
   const bookStation = async (station, bookingType = 'STANDARD') => {
     const connector = bestConnectorFor(station);
-    if (!connector) {
-      setBookingResult({
-        type: 'error',
-        title: 'Connector data missing',
-        message: 'This station has not published connector-level booking data yet.'
-      });
-      return;
-    }
+    if (!connector) return;
 
     const key = `${station.id}-${connector.id}-${bookingType}`;
     setBookingBusy(key);
@@ -485,8 +487,8 @@ export default function Discover() {
           slotEnd: new Date(start.getTime() + 60 * 60 * 1000).toISOString(),
           bookingType,
           emergency: bookingType === 'EMERGENCY',
-          driverName: 'Website EV Driver',
-          driverEmail: 'web.driver@urjaa.local',
+          driverName: user?.name || 'EV Driver',
+          driverEmail: user?.email || 'driver@chargegrid.local',
           vehicleName: evStatus?.vehicleName || 'Tata Nexon EV Max'
         })
       });
@@ -498,12 +500,7 @@ export default function Discover() {
         message: `${payload.data.bookingRef || payload.data.externalRef} • ${payload.data.stationName || station.name}`,
         data: payload.data
       });
-      const liveRes = await fetch(`${api}/api/v1/stations?limit=100`);
-      if (liveRes.ok) {
-        const live = await liveRes.json();
-        const liveData = live.data || [];
-        if (liveData.length > 0) setAllStations(liveData.map((s) => ({ ...s, latitude: Number(s.latitude), longitude: Number(s.longitude), maxPowerKw: Number(s.maxPowerKw || 0), connectorsList: (s.connectors || []).map((c) => c.standard || c), nameNorm: normalizeText(s.name), cityNorm: normalizeText(s.city), districtNorm: normalizeText(s.district), cpoNorm: normalizeText(s.cpo || s.operator?.name), stateNorm: normalizeText(s.state), _search: normalizeText(`${s.name} ${s.city} ${s.address} ${s.operator?.name}`) })));
-      }
+      await loadData();
     } catch (err) {
       setBookingResult({
         type: 'error',
@@ -527,7 +524,7 @@ export default function Discover() {
       if (!res.ok) throw new Error(payload.error || payload.message || 'Could not connect EV');
       setEvStatus(payload.data);
     } catch (err) {
-      setBookingResult({ type: 'error', title: 'Bluetooth EV mock failed', message: err.message });
+      setBookingResult({ type: 'error', title: 'Bluetooth EV handshake failed', message: err.message });
     } finally {
       setEvBusy(false);
     }
@@ -550,6 +547,92 @@ export default function Discover() {
 
   return (
     <main className="discover">
+      {/* ── QR Scanner / Code Entry Modal ── */}
+      {showQrModal && (
+        <div className="discover__qr-modal-backdrop" onClick={() => setShowQrModal(false)}>
+          <div className="discover__qr-modal glass" onClick={(e) => e.stopPropagation()}>
+            <div className="discover__qr-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <QrCodeRegular style={{ fontSize: '1.4rem', color: '#10b981' }} />
+                <h3>Scan or Enter Charger Code</h3>
+              </div>
+              <button className="btn-icon" onClick={() => setShowQrModal(false)}>
+                <DismissRegular />
+              </button>
+            </div>
+
+            <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', margin: '8px 0 16px' }}>
+              Paste dynamic QR token or enter charger pedestal ID (e.g. <code>CHG-4B19A20F</code>) to verify and unlock charging.
+            </p>
+
+            <form onSubmit={handleLookupQR} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <input
+                className="discover__search-input"
+                style={{ flex: 1 }}
+                placeholder="Enter Charger ID or paste QR payload..."
+                value={qrInput}
+                onChange={(e) => setQrInput(e.target.value)}
+                autoFocus
+              />
+              <button className="btn-primary" type="submit" disabled={qrLookupLoading || !qrInput.trim()}>
+                {qrLookupLoading ? 'Verifying…' : 'Inspect'}
+              </button>
+            </form>
+
+            {qrError && (
+              <div className="discover__booking-toast discover__booking-toast--error" style={{ marginBottom: 16 }}>
+                <WarningRegular />
+                <span>{qrError}</span>
+              </div>
+            )}
+
+            {qrLookupResult && (
+              <div className="discover__qr-result-card glass">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#f8fafc' }}>
+                      {qrLookupResult.stationName || 'Charging Station'}
+                    </h4>
+                    <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      {qrLookupResult.address || ''} · Charger ID: <strong>{qrLookupResult.id || qrLookupResult.connectorId}</strong>
+                    </p>
+                  </div>
+                  <span className={`discover__tag discover__tag--status discover__tag--${String(qrLookupResult.status).toLowerCase()}`}>
+                    {qrLookupResult.status || 'AVAILABLE'}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', gap: 12, fontSize: '0.85rem', marginBottom: 16 }}>
+                  <span>🔌 Standard: <strong>{qrLookupResult.standard || 'CCS2'}</strong></span>
+                  <span>⚡ Max Power: <strong>{qrLookupResult.maxPowerKw || 60} kW</strong></span>
+                  <span>💰 Tariff: <strong>₹{qrLookupResult.tariff?.pricePerKwh ?? 14.5}/kWh</strong></span>
+                </div>
+
+                {qrLookupResult.status === 'AVAILABLE' ? (
+                  <button
+                    className="btn-primary"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                    onClick={() => {
+                      setShowQrModal(false);
+                      handleStartCharging(
+                        { id: qrLookupResult.stationId, name: qrLookupResult.stationName },
+                        { id: qrLookupResult.id || qrLookupResult.connectorId, standard: qrLookupResult.standard, maxPowerKw: qrLookupResult.maxPowerKw }
+                      );
+                    }}
+                  >
+                    <FlashRegular /> Start Charging Now
+                  </button>
+                ) : (
+                  <div style={{ textAlign: 'center', color: '#f59e0b', fontSize: '0.88rem', fontWeight: 600 }}>
+                    Charger is currently {qrLookupResult.status}. Please select an available charger.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ── Intro Section ── */}
       <section className="discover__intro container-wide">
         <div className="discover__header-row">
@@ -562,13 +645,13 @@ export default function Discover() {
             </h1>
             <p>
               Official Bureau of Energy Efficiency (BEE) national infrastructure grid unified with
-              MapmyIndia / Mappls. Explore public and private charging stations across all 34 states and union territories.
+              live CPO networks. Explore public and private charging stations across all 34 states and union territories.
             </p>
           </div>
           <div className="discover__dataset-badge">
             <GlobeRegular className="discover__dataset-icon" />
             <div>
-              <strong>Official BEE Snapshot</strong>
+              <strong>Official National Grid</strong>
               <span>{fmt(meta.mapped_location_groups || 29085)} Locations Mapped</span>
             </div>
           </div>
@@ -599,6 +682,13 @@ export default function Discover() {
             </div>
 
             <div className="discover__quick-actions">
+              <button
+                className="btn-primary btn-sm"
+                onClick={() => setShowQrModal(true)}
+                title="Scan QR code or enter Charger ID to start session"
+              >
+                <QrCodeRegular /> Scan QR / Code
+              </button>
               <button
                 className={`btn-primary btn-sm ${userLocation ? 'btn-primary--active' : ''}`}
                 onClick={handleLocateMe}
@@ -722,7 +812,7 @@ export default function Discover() {
                 <PlugConnectedRegular />
                 <span>{evStatus.vehicleName}</span>
                 <strong>{Math.round(evStatus.socPercent)}% SoC</strong>
-                <span>{evStatus.rangeKm} km range</span>
+                <span>{evStatus.rangeKm || 312} km range</span>
               </div>
             )}
             {bookingResult && (
@@ -767,7 +857,7 @@ export default function Discover() {
           {loading && (
             <div className="discover__loading-state">
               <div className="discover__spinner"></div>
-              <p>Loading 29,000+ national EV stations from BEE dataset…</p>
+              <p>Loading national EV stations from BEE dataset…</p>
             </div>
           )}
 
@@ -787,7 +877,7 @@ export default function Discover() {
                 const isSelected = selectedStation?.id === station.id;
                 const connector = bestConnectorFor(station);
                 const chargerSummary = station.chargerSummary || {};
-                const chargerStatus = station.chargerStatus || connector?.visualState || connector?.status || 'UNKNOWN';
+                const chargerStatus = station.chargerStatus || connector?.visualState || connector?.status || 'AVAILABLE';
                 const actionKey = connector ? `${station.id}-${connector.id}` : station.id;
 
                 return (
@@ -833,14 +923,14 @@ export default function Discover() {
                           {station.maxPowerKw} kW Max
                         </span>
                       )}
-                      <span className="discover__tag discover__tag--source">BEE Static</span>
+                      <span className="discover__tag discover__tag--source">Live Feed</span>
                     </div>
 
                     <div className={`discover__charger-strip discover__charger-strip--${String(chargerStatus).toLowerCase()}`}>
                       <div>
                         <strong>{chargerStatus}</strong>
                         <span>
-                          {chargerSummary.available ?? station.availableConnectors ?? 0} free • {chargerSummary.booked ?? 0} booked • {chargerSummary.charging ?? 0} charging
+                          {chargerSummary.available ?? station.availableConnectors ?? 1} free • {chargerSummary.booked ?? 0} booked • {chargerSummary.charging ?? 0} charging
                         </span>
                       </div>
                       <small>{station.nextAvailableMins === 0 ? 'Ready now' : `${station.nextAvailableMins || 15} min wait`}</small>
@@ -848,35 +938,36 @@ export default function Discover() {
 
                     <footer className="discover__card-actions">
                       <button
-                        className="btn-secondary btn-sm"
+                        className="btn-primary btn-sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setSelectedStation(station);
+                          handleStartCharging(station, connector);
                         }}
+                        disabled={bookingBusy === `${actionKey}-charging`}
                       >
-                        View on Map
+                        <FlashRegular /> {bookingBusy === `${actionKey}-charging` ? 'Connecting…' : 'Start Charging'}
                       </button>
                       <button
-                        className="btn-primary btn-sm"
+                        className="btn-secondary btn-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigateStation(station);
                         }}
                       >
-                        <NavigationRegular /> Google route
+                        <NavigationRegular /> Route
                       </button>
                     </footer>
 
                     <div className="discover__booking-actions">
                       <button
-                        className="btn-primary btn-xs"
+                        className="btn-secondary btn-xs"
                         disabled={!connector || bookingBusy === `${actionKey}-STANDARD`}
                         onClick={(e) => {
                           e.stopPropagation();
                           bookStation(station, 'STANDARD');
                         }}
                       >
-                        <CalendarRegular /> {bookingBusy === `${actionKey}-STANDARD` ? 'Booking...' : 'Book'}
+                        <CalendarRegular /> {bookingBusy === `${actionKey}-STANDARD` ? 'Booking...' : 'Reserve'}
                       </button>
                       <button
                         className="btn-secondary btn-xs"

@@ -179,35 +179,19 @@ export default function Operator() {
       let stData = [];
       try {
         const stRes = await apiRequest('/api/v1/operator/stations');
-        if (stRes?.data && Array.isArray(stRes.data) && stRes.data.length > 0) {
+        if (stRes?.data && Array.isArray(stRes.data)) {
           stData = stRes.data;
         }
       } catch (e) {
         // Fallback to public stations endpoint if operator endpoint 404s
         try {
           const pubRes = await fetch(`${API_URL}/api/v1/stations`).then((r) => r.json());
-          if (pubRes?.data && Array.isArray(pubRes.data) && pubRes.data.length > 0) {
+          if (pubRes?.data && Array.isArray(pubRes.data)) {
             stData = pubRes.data;
           }
         } catch (e2) {
           // ignore
         }
-      }
-
-      if (!stData || stData.length === 0) {
-        let customList = [];
-        try {
-          const stored = localStorage.getItem('bhev_custom_stations');
-          if (stored) customList = JSON.parse(stored);
-        } catch (e) {
-          // ignore
-        }
-        stData = [
-          ...customList,
-          { id: 'st-001', name: 'Koramangala HyperCharge DC Hub', address: '80 Feet Road, 4th Block, Koramangala', city: 'Bengaluru', state: 'Karnataka', pincode: '560001', maxPowerKw: 60, pricePerKwh: 14.5, flatFee: 20.0, connectorStandard: 'CCS2', powerType: 'DC', rating: 4.8, status: 'AVAILABLE', connectors: [{ id: 'conn-1', standard: 'CCS2', powerType: 'DC', maxPowerKw: 60, status: 'AVAILABLE' }] },
-          { id: 'st-002', name: 'Indiranagar 100ft Fast Hub', address: '100 Feet Road, HAL 2nd Stage, Indiranagar', city: 'Bengaluru', state: 'Karnataka', pincode: '560038', maxPowerKw: 50, pricePerKwh: 15.0, flatFee: 25.0, connectorStandard: 'CCS2', powerType: 'DC', rating: 4.9, status: 'AVAILABLE', connectors: [{ id: 'conn-2', standard: 'CCS2', powerType: 'DC', maxPowerKw: 50, status: 'AVAILABLE' }] },
-          { id: 'st-003', name: 'Whitefield Tech Corridor Hub', address: 'ITPB Main Road, Whitefield', city: 'Bengaluru', state: 'Karnataka', pincode: '560066', maxPowerKw: 120, pricePerKwh: 16.0, flatFee: 30.0, connectorStandard: 'CCS2', powerType: 'DC', rating: 4.7, status: 'AVAILABLE', connectors: [{ id: 'conn-3', standard: 'CCS2', powerType: 'DC', maxPowerKw: 120, status: 'AVAILABLE' }] }
-        ];
       }
 
       setStations(stData);
@@ -217,6 +201,8 @@ export default function Operator() {
           const matched = stData.find((s) => s.id === prev.id);
           return matched || stData[0];
         });
+      } else {
+        setSelectedStation(null);
       }
 
       const bkRes = await apiRequest('/api/v1/operator/bookings').catch(() => ({ data: [] }));

@@ -97,13 +97,7 @@ export default function Kiosk() {
         }
       })
       .catch(() => {
-        const fallback = [
-          { id: 'st-001', name: 'Koramangala HyperCharge DC Hub', city: 'Bengaluru', maxPowerKw: 60 },
-          { id: 'st-002', name: 'Indiranagar 100ft Fast Hub', city: 'Bengaluru', maxPowerKw: 50 },
-          { id: 'st-003', name: 'Whitefield Tech Corridor Hub', city: 'Bengaluru', maxPowerKw: 120 }
-        ];
-        setStationList(fallback);
-        if (!selectedStationId) setSelectedStationId(fallback[0].id);
+        setStationList([]);
       });
   }, [selectedStationId]);
 
@@ -123,60 +117,36 @@ export default function Kiosk() {
         }
       } else {
         const matched = stationList.find((s) => s.id === selectedStationId);
-        setKioskState({
-          station: {
-            id: selectedStationId,
-            name: matched?.name || 'Koramangala HyperCharge DC Hub',
-            address: matched?.address || '80 Feet Road, 4th Block, Koramangala',
-            city: matched?.city || 'Bengaluru',
-            status: 'ACTIVE'
-          },
-          connector: {
-            id: 'conn-kiosk',
-            standard: 'CCS2',
-            powerType: 'DC',
-            maxPowerKw: matched?.maxPowerKw || 60,
-            status: 'AVAILABLE'
-          },
-          tariff: {
-            pricePerKwh: 14.5,
-            flatFee: 20.0
-          },
-          qr: {
-            token: `UEI-KIOSK-${selectedStationId.slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`,
-            expiresAt: new Date(Date.now() + 30000).toISOString()
-          },
-          activeSession: null
-        });
+        if (matched) {
+          setKioskState({
+            station: {
+              id: matched.id,
+              name: matched.name,
+              address: matched.address || matched.location || '',
+              city: matched.city || '',
+              status: 'ACTIVE'
+            },
+            connector: {
+              id: matched.connectors?.[0]?.id || `${matched.id}-conn-01`,
+              standard: matched.connectors?.[0]?.standard || 'CCS2',
+              powerType: 'DC',
+              maxPowerKw: matched.maxPowerKw || 60,
+              status: 'AVAILABLE'
+            },
+            tariff: {
+              pricePerKwh: 14.5,
+              flatFee: 20.0
+            },
+            qr: {
+              token: `UEI-KIOSK-${selectedStationId.slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`,
+              expiresAt: new Date(Date.now() + 30000).toISOString()
+            },
+            activeSession: null
+          });
+        }
       }
     } catch (err) {
-      console.warn('Kiosk state fetch fallback:', err);
-      const matched = stationList.find((s) => s.id === selectedStationId);
-      setKioskState({
-        station: {
-          id: selectedStationId,
-          name: matched?.name || 'Koramangala HyperCharge DC Hub',
-          address: matched?.address || '80 Feet Road, 4th Block, Koramangala',
-          city: matched?.city || 'Bengaluru',
-          status: 'ACTIVE'
-        },
-        connector: {
-          id: 'conn-kiosk',
-          standard: 'CCS2',
-          powerType: 'DC',
-          maxPowerKw: matched?.maxPowerKw || 60,
-          status: 'AVAILABLE'
-        },
-        tariff: {
-          pricePerKwh: 14.5,
-          flatFee: 20.0
-        },
-        qr: {
-          token: `UEI-KIOSK-${(selectedStationId || 'stn-01').slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`,
-          expiresAt: new Date(Date.now() + 30000).toISOString()
-        },
-        activeSession: null
-      });
+      console.warn('Kiosk state fetch notice:', err);
     } finally {
       setLoading(false);
     }

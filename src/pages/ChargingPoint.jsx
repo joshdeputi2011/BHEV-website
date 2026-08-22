@@ -72,14 +72,13 @@ export default function ChargingPoint() {
 
   // Load dynamic QR
   const loadQr = useCallback(async () => {
-    if (!token) return;
     try {
-      const data = await apiFetch(`/api/v1/operator/mock-stations/${stationId}/dynamic-qr`);
+      const data = await apiFetch(`/api/v1/qr/${stationId}`);
       setQr(data.data);
     } catch {
       // Non-critical
     }
-  }, [stationId, token, apiFetch]);
+  }, [stationId, apiFetch]);
 
   useEffect(() => {
     loadStation();

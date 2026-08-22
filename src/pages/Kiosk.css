@@ -175,6 +175,70 @@
   box-shadow: 0 10px 30px rgba(56, 189, 248, 0.35);
 }
 
+.kiosk-qr-box--green {
+  border-color: #10b981;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.25);
+}
+
+.kiosk-qr-box--blue {
+  border-color: #2563eb;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.28);
+}
+
+.kiosk-qr-box--red {
+  border-color: #ef4444;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.28);
+}
+
+.kiosk-qr-box--orange {
+  border-color: #f97316;
+  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3);
+}
+
+.kiosk-live-session-card {
+  width: min(260px, 70vw);
+  min-height: 200px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #111827;
+  color: #f8fafc;
+  text-align: center;
+}
+
+.kiosk-live-session-card__icon {
+  font-size: 42px;
+  color: #fdba74;
+}
+
+.kiosk-live-session-card strong {
+  font-size: 1.12rem;
+}
+
+.kiosk-live-session-card span {
+  color: #cbd5e1;
+  font-size: 0.84rem;
+}
+
+.kiosk-live-session-card div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.kiosk-live-session-card b {
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fed7aa;
+  font-size: 0.8rem;
+}
+
 .kiosk-qr-status {
   display: flex;
   align-items: center;

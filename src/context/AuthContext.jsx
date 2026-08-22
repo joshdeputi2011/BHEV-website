@@ -1,4 +1,4 @@
-// ─── CHARGEGRID — Auth Context ────────────────────────────
+// ─── URJJA — Auth Context ────────────────────────────
 // Global authentication state with JWT persistence.
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';

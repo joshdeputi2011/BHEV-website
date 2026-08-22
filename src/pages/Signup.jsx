@@ -55,12 +55,12 @@ export default function Signup() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="signup-page__logo">
-          <FlashRegular />
+          <img src="/urjja.svg" alt="Urjja Logo" className="signup-page__logo-img" />
         </div>
 
         <h1 className="signup-page__title">Create <span className="tiranga-gradient-text">Account</span></h1>
         <p className="signup-page__subtitle">
-          Join ChargeGrid — India's unified EV charging network
+          Join Urjja — India's unified EV charging network
         </p>
 
         {error && <div className="signup-page__error">{error}</div>}

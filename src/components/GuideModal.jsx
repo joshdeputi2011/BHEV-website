@@ -23,9 +23,9 @@ const steps = [
     tag: 'Home • /',
     path: '/',
     icon: <FlashRegular />,
-    heading: 'Understanding CHARGEGRID & UEI',
+    heading: 'Understanding URJJA & UEI',
     description:
-      'CHARGEGRID is India’s open, interoperable Unified EV Infrastructure framework. Just like UPI unified digital payments across banks, UEI unifies EV discovery, booking, and charging across all Charge Point Operators (CPOs).',
+      'URJJA is India’s open, interoperable Unified EV Infrastructure framework. Just like UPI unified digital payments across banks, UEI unifies EV discovery, booking, and charging across all Charge Point Operators (CPOs).',
     highlights: [
       'Learn about the open UEI reservation standard.',
       'Explore core features for drivers, CPOs, and app developers.',
@@ -190,7 +190,7 @@ export default function GuideModal({ isOpen, onClose }) {
                 <span>Interactive Platform Guide</span>
               </span>
               <h2 id="guide-modal-title" className="guide-modal__main-title">
-                How to Navigate <span className="tiranga-gradient-text">CHARGEGRID</span>
+                How to Navigate <span className="tiranga-gradient-text">URJJA</span>
               </h2>
             </div>
             <button

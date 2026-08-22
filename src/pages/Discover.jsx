@@ -465,7 +465,7 @@ export default function Discover() {
         <div className="discover__header-row">
           <div>
             <span className="discover__eyebrow">
-              <FlashRegular /> CHARGEGRID • NATIONAL EV DISCOVERY MAP
+              <FlashRegular /> URJJA • NATIONAL EV DISCOVERY MAP
             </span>
             <h1>
               One Map. <span className="tiranga-gradient-text">29,000+ EV Chargers in India.</span>

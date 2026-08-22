@@ -46,23 +46,28 @@
 }
 
 .navbar__logo-icon {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-surface);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-sm);
-  font-size: 1.2rem;
-  color: var(--accent);
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
+.navbar__logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 2px;
+}
+
 [data-theme="gov"] .navbar__logo-icon {
   background: #FFF7ED;
-  color: var(--saffron-dark);
   border-color: #FDBA74;
 }
 

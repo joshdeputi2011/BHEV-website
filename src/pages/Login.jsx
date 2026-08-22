@@ -45,12 +45,12 @@ export default function Login() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="login-page__logo">
-          <FlashRegular />
+          <img src="/urjja.svg" alt="Urjja Logo" className="login-page__logo-img" />
         </div>
 
         <h1 className="login-page__title">Welcome <span className="tiranga-gradient-text">Back</span></h1>
         <p className="login-page__subtitle">
-          Sign in to your ChargeGrid account
+          Sign in to your Urjja account
         </p>
 
         {error && <div className="login-page__error">{error}</div>}

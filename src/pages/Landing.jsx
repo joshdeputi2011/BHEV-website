@@ -17,7 +17,7 @@ import GlassCard from '../components/GlassCard';
 import GlowBlob from '../components/GlowBlob';
 import '../components/GlassCard.css';
 import './Landing.css';
-import heroImage from '../assets/chargegrid-network-hero.png';
+import heroImage from '../assets/urjja-network-hero.png';
 
 const features = [
   {
@@ -94,7 +94,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
           >
-            CHARGEGRID connects Charge Point Operators, EV drivers, and enterprise developers
+            URJJA connects Charge Point Operators, EV drivers, and enterprise developers
             through an open interoperable framework — powering seamless national EV mobility,
             just like UPI revolutionized digital payments.
           </motion.p>
@@ -268,7 +268,7 @@ const booking = await fetch('/api/v1/bookings', {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            <h2>Ready to Connect to <span className="tiranga-gradient-text">CHARGEGRID</span>?</h2>
+            <h2>Ready to Connect to <span className="tiranga-gradient-text">URJJA</span>?</h2>
             <p>Explore the unified API documentation or access the operator simulator console.</p>
             <div className="landing__cta-actions">
               <Link to="/docs" className="btn-primary">
@@ -287,10 +287,10 @@ const booking = await fetch('/api/v1/bookings', {
         <div className="container">
           <div className="landing__footer-inner">
             <div className="landing__footer-brand">
-              <div className="navbar__logo-icon" style={{ width: 30, height: 30, fontSize: '0.95rem' }}>
-                <FlashRegular />
+              <div className="navbar__logo-icon" style={{ width: 32, height: 32 }}>
+                <img src="/urjja.svg" alt="Urjja Logo" className="navbar__logo-img" />
               </div>
-              <span style={{ fontWeight: 800, letterSpacing: 0.5, fontSize: '1rem' }}>CHARGEGRID • UEI</span>
+              <span style={{ fontWeight: 800, letterSpacing: 0.5, fontSize: '1rem' }}>URJJA • UEI</span>
             </div>
             <div className="landing__footer-links">
               <Link to="/">Home</Link>

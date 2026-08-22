@@ -1,0 +1,463 @@
+/* ═══ API Docs Page ═══ */
+
+.docs {
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
+.docs__header {
+  padding: 120px 0 48px;
+  background: linear-gradient(160deg, var(--bg-gradient-start), var(--bg-primary) 60%);
+  position: relative;
+  overflow: hidden;
+}
+
+.docs__header-content {
+  max-width: 700px;
+}
+
+.docs__header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(69, 191, 255, 0.08);
+  border: 1px solid rgba(69, 191, 255, 0.2);
+  border-radius: var(--radius-pill);
+  color: var(--accent-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.docs__header h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.docs__header p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.docs__base-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.docs__base-url-label {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.docs__base-url code {
+  color: var(--accent);
+  font-family: 'Fira Code', monospace;
+}
+
+.docs__copy-btn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.docs__copy-btn:hover {
+  color: var(--accent);
+}
+
+/* ── Layout ── */
+.docs__layout {
+  display: flex;
+  gap: 32px;
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+
+/* ── Sidebar ── */
+.docs__sidebar {
+  width: 280px;
+  min-width: 280px;
+}
+
+.docs__sidebar-sticky {
+  position: sticky;
+  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100vh - 104px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.docs__search {
+  width: 100%;
+}
+
+.docs__filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-tertiary);
+  font-size: 1rem;
+}
+
+.docs__filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.docs__filter-pill {
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.docs__filter-pill:hover {
+  border-color: var(--border-medium);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.docs__filter-pill--active {
+  background: rgba(57, 255, 150, 0.1);
+  border-color: rgba(57, 255, 150, 0.3);
+  color: var(--accent);
+}
+
+/* ── Nav ── */
+.docs__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.docs__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+}
+
+.docs__nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.docs__nav-item--active {
+  background: rgba(57, 255, 150, 0.08);
+  color: var(--accent);
+}
+
+.docs__nav-count {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ── Auth info ── */
+.docs__auth-info {
+  padding: 16px;
+  border-radius: var(--radius-md);
+}
+
+.docs__auth-info h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.docs__auth-info p {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.docs__auth-info code {
+  color: var(--accent-blue);
+  font-size: 0.8rem;
+}
+
+/* ── Content ── */
+.docs__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.docs__section {
+  margin-bottom: 48px;
+}
+
+.docs__section-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.docs__section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.docs__section-header p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin-bottom: 10px;
+}
+
+.docs__section-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.docs__tag {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(69, 191, 255, 0.08);
+  border: 1px solid rgba(69, 191, 255, 0.15);
+  color: var(--accent-blue);
+}
+
+/* ── Endpoints ── */
+.docs__endpoints {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docs__endpoint {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.docs__endpoint--expanded {
+  border-color: var(--glass-border-hover);
+}
+
+.docs__endpoint-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: background 0.15s;
+}
+
+.docs__endpoint-header:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.docs__endpoint-path {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.docs__endpoint-summary {
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs__endpoint-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.docs__endpoint-auth {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.docs__endpoint-auth--required {
+  color: #FFB845;
+  background: rgba(255, 184, 69, 0.1);
+}
+
+.docs__endpoint-auth--public {
+  color: var(--accent);
+  background: rgba(57, 255, 150, 0.08);
+}
+
+.docs__endpoint-chevron {
+  color: var(--text-muted);
+  font-size: 1rem;
+  display: flex;
+}
+
+/* ── Endpoint body ── */
+.docs__endpoint-body {
+  overflow: hidden;
+}
+
+.docs__endpoint-details {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.docs__endpoint-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(57, 255, 150, 0.05);
+  border: 1px solid rgba(57, 255, 150, 0.12);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.docs__endpoint-note svg {
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.docs__code-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docs__code-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.docs__response-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  background: rgba(57, 255, 150, 0.1);
+  border: 1px solid rgba(57, 255, 150, 0.2);
+  border-radius: 4px;
+  color: var(--accent);
+  font-size: 0.7rem;
+  margin-left: 6px;
+  font-weight: 700;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .docs__layout {
+    flex-direction: column;
+  }
+
+  .docs__sidebar {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .docs__sidebar-sticky {
+    position: static;
+    max-height: none;
+  }
+
+  .docs__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .docs__nav-item {
+    flex: 0 0 auto;
+  }
+
+  .docs__auth-info {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .docs__header {
+    padding: 100px 0 32px;
+  }
+
+  .docs__endpoint-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .docs__endpoint-summary {
+    width: 100%;
+    order: 3;
+  }
+
+  .docs__endpoint-meta {
+    margin-left: auto;
+  }
+
+  .docs__filter {
+    flex-wrap: wrap;
+  }
+}

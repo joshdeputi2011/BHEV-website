@@ -1,0 +1,14 @@
+.method-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+  border-radius: 6px;
+  text-transform: uppercase;
+  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  white-space: nowrap;
+  min-width: 56px;
+  text-align: center;
+}

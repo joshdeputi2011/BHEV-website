@@ -1,16 +1,19 @@
+/* ═══════════════════════════════════════════════════
+   GlassCard / Elevated Surface Component
+   ═══════════════════════════════════════════════════ */
+
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  transition: all 0.3s ease;
+  box-shadow: var(--inner-highlight), var(--shadow-sm);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
 }
 
 .glass-card--hover:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card);
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+  box-shadow: var(--inner-highlight), var(--shadow-elevated);
 }

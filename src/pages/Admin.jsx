@@ -164,7 +164,7 @@ function Dashboard({ token, logout }) {
 
         {/* Table header */}
         <div className="admin__table-header">
-          <h2>{tabs.find((t) => t.key === activeTab)?.label}</h2>
+          <h2>Admin <span className="tiranga-gradient-text">{tabs.find((t) => t.key === activeTab)?.label}</span> Console</h2>
           <button
             className="btn-secondary btn-sm"
             onClick={() => fetchData(activeTab)}

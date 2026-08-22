@@ -76,7 +76,7 @@ export default function AuthGate({ children, requiredRoles = ['admin'], title = 
           <FlashRegular />
         </div>
 
-        <h2 className="auth-gate__title">{title}</h2>
+        <h2 className="auth-gate__title"><span className="tiranga-gradient-text">{title}</span></h2>
         <p className="auth-gate__subtitle">
           Sign in with your admin credentials to access the dashboard.
         </p>

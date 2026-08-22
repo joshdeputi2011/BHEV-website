@@ -22,41 +22,41 @@ import heroImage from '../assets/chargegrid-network-hero.png';
 const features = [
   {
     icon: <CalendarRegular />,
-    title: 'Universal Booking',
-    desc: 'Book charging slots across any CPO network through a single unified API. No more fragmented apps.',
+    title: 'Universal Reservation Protocol',
+    desc: 'Idempotent, conflict-safe booking across all connected CPO networks through one single interoperable API standard.',
   },
   {
     icon: <FlashRegular />,
-    title: 'Real-time Sessions',
-    desc: 'Live energy consumption tracking with BLE-integrated metering and automatic cost calculation.',
+    title: 'Live Energy Metering',
+    desc: 'Real-time session tracking with smart metering, transparent tariffs, and automatic digital billing settlements.',
   },
   {
     icon: <PeopleRegular />,
-    title: 'Multi-operator Support',
-    desc: 'Seamlessly connect multiple Charge Point Operators under one interoperable framework.',
+    title: 'Multi-Operator Interoperability',
+    desc: 'Unifies public and private Charge Point Operators under the Unified EV Infrastructure (UEI) open standard.',
   },
   {
     icon: <ShieldCheckmarkRegular />,
-    title: 'Secure Authentication',
-    desc: 'JWT-based auth with email verification, OTP, and Google OAuth. Role-based access control built-in.',
+    title: 'Secure National Auth',
+    desc: 'Cryptographically signed QR tokens, role-based access control, and secure driver verification architecture.',
   },
   {
     icon: <MapRegular />,
-    title: 'Station Discovery',
-    desc: 'Geo-aware station search with real-time availability, ratings, wait times, and connector info.',
+    title: 'Real-time Station Discovery',
+    desc: 'Geo-aware search with live connector availability, power ratings, tariffs, and navigation integration.',
   },
   {
     icon: <DocumentRegular />,
-    title: 'Developer-first API',
-    desc: 'RESTful endpoints with comprehensive documentation. Build your own EV app on top of UEI.',
+    title: 'Open Developer SDK & APIs',
+    desc: 'RESTful endpoints with standardized JSON schemas. Build navigation, fleet, and consumer apps on top of UEI.',
   },
 ];
 
 const steps = [
-  { num: '01', icon: <PeopleRegular />, title: 'Register', desc: 'Sign up via email, phone OTP, or Google. Get your API token instantly.' },
-  { num: '02', icon: <SearchRegular />, title: 'Find Station', desc: 'Search nearby stations with real-time availability, connector types, and tariffs.' },
-  { num: '03', icon: <CheckmarkCircleRegular />, title: 'Book Slot', desc: 'Reserve a time slot with conflict detection. Receive a unique QR token for check-in.' },
-  { num: '04', icon: <BatteryChargeRegular />, title: 'Charge', desc: 'Scan QR to start session. Real-time energy tracking with automatic billing.' },
+  { num: '01', icon: <PeopleRegular />, title: 'Register Account', desc: 'Sign up securely with verified credentials to generate client API tokens.' },
+  { num: '02', icon: <SearchRegular />, title: 'Discover Stations', desc: 'Search normalized nearby stations with real-time connector availability.' },
+  { num: '03', icon: <CheckmarkCircleRegular />, title: 'Reserve Slot', desc: 'Lock in conflict-free charging slots with instant cryptographic confirmation.' },
+  { num: '04', icon: <BatteryChargeRegular />, title: 'Plug & Charge', desc: 'Scan the station dynamic QR to initiate charging with live telemetry.' },
 ];
 
 export default function Landing() {
@@ -64,85 +64,84 @@ export default function Landing() {
     <div className="landing">
       {/* ── Hero ── */}
       <section className="landing__hero">
-        <img className="landing__hero-image" src={heroImage} alt="Electric vehicle charging network at dusk" />
-        <GlowBlob color="green" size={280} top="-100px" left="-80px" />
-        <GlowBlob color="blue" size={320} bottom="-120px" right="-60px" delay={2} />
-        <GlowBlob color="cyan" size={160} top="40%" left="60%" delay={4} />
+        <img className="landing__hero-image" src={heroImage} alt="Electric vehicle charging network in India" />
+        <GlowBlob color="green" size={280} top="-80px" left="-60px" />
+        <GlowBlob color="blue" size={320} bottom="-100px" right="-40px" delay={2} />
 
         <div className="container landing__hero-inner">
           <motion.div
             className="landing__hero-badge"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <FlashRegular />
-            <span>Unified EV Infrastructure Framework</span>
+            <span className="landing__hero-badge-flag">🇮🇳</span>
+            <span>National Unified EV Infrastructure Framework • UEI</span>
           </motion.div>
 
           <motion.h1
             className="landing__hero-title"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            One API for <span className="gradient-text">Every EV Charger</span> in India
+            One National Protocol for <span className="tiranga-gradient-text">Every EV Charger</span> in India
           </motion.h1>
 
           <motion.p
             className="landing__hero-subtitle"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
           >
-            CHARGEGRID connects Charge Point Operators, EV drivers, and app developers
-            through a single interoperable framework — making EV charging as
-            seamless as UPI made payments.
+            CHARGEGRID connects Charge Point Operators, EV drivers, and enterprise developers
+            through an open interoperable framework — powering seamless national EV mobility,
+            just like UPI revolutionized digital payments.
           </motion.p>
 
           <motion.div
             className="landing__hero-actions"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.45 }}
           >
             <Link to="/docs" className="btn-primary">
               <DocumentRegular /> API Documentation
             </Link>
             <Link to="/discover" className="btn-secondary">
-              Explore stations <ArrowRightRegular />
+              Find Stations <ArrowRightRegular />
             </Link>
           </motion.div>
 
-          {/* Hero code preview */}
+          {/* Hero code preview (Developer Workbench) */}
           <motion.div
-            className="landing__hero-code glass"
-            initial={{ opacity: 0, y: 40 }}
+            className="landing__hero-code"
+            initial={{ opacity: 0, y: 35 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.65 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
           >
             <div className="landing__code-header">
               <span className="landing__code-dot" style={{ background: '#FF5F56' }}></span>
               <span className="landing__code-dot" style={{ background: '#FFBD2E' }}></span>
               <span className="landing__code-dot" style={{ background: '#27C93F' }}></span>
-              <span className="landing__code-label">Quick Start</span>
+              <span className="landing__code-label">Unified API Quickstart</span>
             </div>
             <pre className="code-block">
-{`// 1. Authenticate
-const res = await fetch('/auth/email/login', {
+{`// 1. Authenticate driver or developer client
+const auth = await fetch('/api/v1/auth/login', {
   method: 'POST',
   body: JSON.stringify({ email, password })
 });
-const { token } = await res.json();
+const { token } = await auth.json();
 
-// 2. Find nearby stations
-const stations = await fetch('/stations/nearby?lat=12.97&lng=77.59');
+// 2. Discover normalized stations nearby
+const stations = await fetch('/api/v1/stations/nearby?lat=12.9716&lng=77.5946&radiusKm=10');
 
-// 3. Book a slot
-const booking = await fetch('/bookings', {
+// 3. Reserve conflict-safe connector slot
+const booking = await fetch('/api/v1/bookings', {
   method: 'POST',
   headers: { Authorization: \`Bearer \${token}\` },
-  body: JSON.stringify({ stationId, slotStart, slotEnd })
+  body: JSON.stringify({ connectorId, slotStart, slotEnd, idempotencyKey })
 });`}
             </pre>
           </motion.div>
@@ -157,15 +156,15 @@ const booking = await fetch('/bookings', {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
-            <h2>Built for the <span className="gradient-text">EV Ecosystem</span></h2>
-            <p>Everything you need to build, manage, and scale EV charging infrastructure.</p>
+            <h2>Architected for the <span className="tiranga-gradient-text">National EV Grid</span></h2>
+            <p>Standardized specifications, zero vendor lock-in, and interoperable protocol rails.</p>
           </motion.div>
 
           <div className="landing__features-grid">
             {features.map((f, i) => (
-              <GlassCard key={i} delay={i * 0.1} className="landing__feature-card">
+              <GlassCard key={i} delay={i * 0.08} className="landing__feature-card">
                 <div className="landing__feature-icon">{f.icon}</div>
                 <h3>{f.title}</h3>
                 <p>{f.desc}</p>
@@ -177,17 +176,16 @@ const booking = await fetch('/bookings', {
 
       {/* ── How It Works ── */}
       <section className="section landing__how-section">
-        <GlowBlob color="green" size={200} top="20%" right="-80px" delay={1} />
         <div className="container">
           <motion.div
             className="landing__section-header"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
-            <h2>How It <span className="gradient-text">Works</span></h2>
-            <p>From registration to charging in four simple steps.</p>
+            <h2>How the <span className="tiranga-gradient-text">Network Operates</span></h2>
+            <p>From driver discovery to energy settlement in four standardized steps.</p>
           </motion.div>
 
           <div className="landing__steps">
@@ -195,10 +193,10 @@ const booking = await fetch('/bookings', {
               <motion.div
                 key={i}
                 className="landing__step"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
               >
                 <div className="landing__step-num">{s.num}</div>
                 <div className="landing__step-icon">{s.icon}</div>
@@ -221,41 +219,39 @@ const booking = await fetch('/bookings', {
               <div className="landing__audience-icon cpo">
                 <PlugConnectedRegular />
               </div>
-              <h3>For Charge Point Operators</h3>
+              <h3>For Charge Point Operators (CPOs)</h3>
               <p>
-                Register your charging stations, manage bookings, and stream live
-                energy readings through the UEI API. Reach thousands of EV drivers
-                through any UEI-connected app.
+                Register your network chargers, broadcast real-time availability, and receive
+                standardized bookings across multiple consumer mobility applications.
               </p>
               <ul className="landing__audience-list">
-                <li><CheckmarkCircleRegular /> Station registration & management</li>
-                <li><CheckmarkCircleRegular /> Real-time booking visibility</li>
-                <li><CheckmarkCircleRegular /> BLE energy metering integration</li>
-                <li><CheckmarkCircleRegular /> Automated billing & settlements</li>
+                <li><CheckmarkCircleRegular /> Normalized CPO station registration</li>
+                <li><CheckmarkCircleRegular /> Real-time connector availability telemetry</li>
+                <li><CheckmarkCircleRegular /> Dynamic HMAC arrival verification</li>
+                <li><CheckmarkCircleRegular /> Standardized settlement rails</li>
               </ul>
               <Link to="/docs" className="btn-primary btn-sm">
                 CPO Integration Guide <ArrowRightRegular />
               </Link>
             </GlassCard>
 
-            <GlassCard className="landing__audience-card" delay={0.2}>
+            <GlassCard className="landing__audience-card" delay={0.15}>
               <div className="landing__audience-icon dev">
                 <DocumentRegular />
               </div>
-              <h3>For App Developers</h3>
+              <h3>For App Developers & Fleet Platforms</h3>
               <p>
-                Build EV charging into your application with our RESTful API.
-                Station discovery, booking, sessions, and payments — all through
-                a single integration point.
+                Embed national charging station discovery, real-time connector booking, and
+                charging sessions into your app via one unified RESTful API contract.
               </p>
               <ul className="landing__audience-list">
-                <li><CheckmarkCircleRegular /> RESTful API with JWT auth</li>
-                <li><CheckmarkCircleRegular /> Station search & availability</li>
-                <li><CheckmarkCircleRegular /> Booking with conflict detection</li>
-                <li><CheckmarkCircleRegular /> Real-time session tracking</li>
+                <li><CheckmarkCircleRegular /> Single API for all Indian CPOs</li>
+                <li><CheckmarkCircleRegular /> Geo-aware radius & connector search</li>
+                <li><CheckmarkCircleRegular /> Idempotent slot reservations</li>
+                <li><CheckmarkCircleRegular /> OpenAPI 3.0 specifications</li>
               </ul>
               <Link to="/docs" className="btn-primary btn-sm">
-                Developer Docs <ArrowRightRegular />
+                Developer API Docs <ArrowRightRegular />
               </Link>
             </GlassCard>
           </div>
@@ -264,23 +260,22 @@ const booking = await fetch('/bookings', {
 
       {/* ── CTA ── */}
       <section className="section landing__cta-section">
-        <GlowBlob color="accent" size={250} top="-60px" left="30%" />
         <div className="container">
           <motion.div
-            className="landing__cta glass"
-            initial={{ opacity: 0, y: 30 }}
+            className="landing__cta"
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
-            <h2>Ready to <span className="gradient-text">Get Started</span>?</h2>
-            <p>Explore the API documentation or access the admin dashboard.</p>
+            <h2>Ready to Connect to <span className="tiranga-gradient-text">CHARGEGRID</span>?</h2>
+            <p>Explore the unified API documentation or access the operator simulator console.</p>
             <div className="landing__cta-actions">
               <Link to="/docs" className="btn-primary">
-                View API Docs <ArrowRightRegular />
+                Explore API Reference <ArrowRightRegular />
               </Link>
-              <Link to="/admin" className="btn-secondary">
-                Admin Dashboard
+              <Link to="/operator" className="btn-secondary">
+                Operator Simulator
               </Link>
             </div>
           </motion.div>
@@ -292,18 +287,20 @@ const booking = await fetch('/bookings', {
         <div className="container">
           <div className="landing__footer-inner">
             <div className="landing__footer-brand">
-              <div className="navbar__logo-icon" style={{ width: 32, height: 32, fontSize: '1rem' }}>
+              <div className="navbar__logo-icon" style={{ width: 30, height: 30, fontSize: '0.95rem' }}>
                 <FlashRegular />
               </div>
-              <span style={{ fontWeight: 700, letterSpacing: 1 }}>UEI</span>
+              <span style={{ fontWeight: 800, letterSpacing: 0.5, fontSize: '1rem' }}>CHARGEGRID • UEI</span>
             </div>
             <div className="landing__footer-links">
               <Link to="/">Home</Link>
+              <Link to="/discover">Discover</Link>
               <Link to="/docs">API Docs</Link>
+              <Link to="/operator">Operator</Link>
               <Link to="/admin">Admin</Link>
             </div>
             <p className="landing__footer-copy">
-              © 2026 Unified EV Infrastructure. Built for SIH 2026.
+              © 2026 Unified EV Infrastructure (UEI) • Government of India Initiative • Built for Smart India Hackathon 2026.
             </p>
           </div>
         </div>

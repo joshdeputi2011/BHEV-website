@@ -1,14 +1,81 @@
+/* ═══════════════════════════════════════════════════
+   HTTP Method Badge Component — Dual Mode
+   ═══════════════════════════════════════════════════ */
+
 .method-badge {
-  display: inline-block;
-  padding: 3px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  border: 1px solid;
-  border-radius: 6px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-xs);
   text-transform: uppercase;
-  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  font-family: var(--font-mono);
   white-space: nowrap;
-  min-width: 56px;
+  min-width: 52px;
   text-align: center;
+  line-height: 1.4;
+}
+
+.method-badge--get {
+  color: var(--method-get);
+  border-color: var(--method-get);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.method-badge--post {
+  color: var(--method-post);
+  border-color: var(--method-post);
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.method-badge--put {
+  color: var(--method-put);
+  border-color: var(--method-put);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.method-badge--delete {
+  color: var(--method-delete);
+  border-color: var(--method-delete);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.method-badge--patch {
+  color: var(--method-patch);
+  border-color: var(--method-patch);
+  background: rgba(168, 85, 247, 0.1);
+}
+
+[data-theme="gov"] .method-badge--get {
+  background: #ECFDF5;
+  color: #046A38;
+  border-color: #A7F3D0;
+}
+
+[data-theme="gov"] .method-badge--post {
+  background: #EFF6FF;
+  color: #002D62;
+  border-color: #BFDBFE;
+}
+
+[data-theme="gov"] .method-badge--put {
+  background: #FFFBEB;
+  color: #B45309;
+  border-color: #FDE68A;
+}
+
+[data-theme="gov"] .method-badge--delete {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border-color: #FECACA;
+}
+
+[data-theme="gov"] .method-badge--patch {
+  background: #FAF5FF;
+  color: #6D28D9;
+  border-color: #DDD6FE;
 }

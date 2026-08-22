@@ -38,7 +38,7 @@ export default function Discover() {
   return <main className="discover">
     <section className="discover__intro container-wide">
       <span className="discover__eyebrow"><FlashRegular /> CHARGEGRID live discovery</span>
-      <h1>One map. <span className="gradient-text">Every connected network.</span></h1>
+      <h1>One map. <span className="tiranga-gradient-text">Every connected network.</span></h1>
       <p>Stations are read from the normalized CHARGEGRID API. Prototype stations are visibly marked until an operator authorizes a production OCPI/API integration.</p>
       <div className="discover__controls glass">
         <label className="input-with-icon"><span className="input-icon"><SearchRegular /></span><input className="input-field" placeholder="Search city, station or address" value={query} onChange={(event) => setQuery(event.target.value)} /></label>

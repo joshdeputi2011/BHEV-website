@@ -35,9 +35,6 @@ async function drawQR(canvas, text, size = 200) {
   }
 }
 
-const TARIFF_PER_KWH = 12.5; // ₹ per kWh
-const MAX_POWER_KW = 60; // kW charger
-
 export default function ChargingPoint() {
   const { stationId } = useParams();
   const { token, apiFetch } = useAuth();
@@ -47,6 +44,10 @@ export default function ChargingPoint() {
   const [qr, setQr] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const firstConnector = station?.connectors?.[0];
+  const maxPowerKw = Number(firstConnector?.maxPowerKw || 60);
+  const tariffPerKwh = Number(firstConnector?.tariff?.pricePerKwh || 14.5);
 
   // Simulation state
   const [simulating, setSimulating] = useState(false);
@@ -124,7 +125,7 @@ export default function ChargingPoint() {
           return Math.min(prev + 1.5 + Math.random(), 100);
         });
         setEnergyKwh((prev) => {
-          const increment = (MAX_POWER_KW / 120) * (0.8 + Math.random() * 0.4);
+          const increment = (maxPowerKw / 120) * (0.8 + Math.random() * 0.4);
           return Math.round((prev + increment) * 100) / 100;
         });
       }, 500);
@@ -151,7 +152,7 @@ export default function ChargingPoint() {
     return () => clearInterval(simIntervalRef.current);
   }, []);
 
-  const cost = Math.round(energyKwh * TARIFF_PER_KWH * 100) / 100;
+  const cost = Math.round(energyKwh * tariffPerKwh * 100) / 100;
 
   if (loading) {
     return (

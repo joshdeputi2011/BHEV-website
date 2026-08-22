@@ -160,7 +160,13 @@ export default function Kiosk() {
 
   // Draw QR and generate Data URL
   useEffect(() => {
-    const token = kioskState?.qr?.token || `UEI-KIOSK-${(selectedStationId || 'st-001').slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`;
+    if (kioskState?.activeSession || simStreaming) {
+      setQrDataUrl('');
+      return;
+    }
+    const token = kioskState?.qr?.token;
+    if (!token) return;
+
     QRCode.toDataURL(token, {
       width: 220,
       margin: 1,
@@ -176,7 +182,7 @@ export default function Kiosk() {
     if (qrCanvasRef.current) {
       drawKioskQR(qrCanvasRef.current, token, 200);
     }
-  }, [kioskState?.qr?.token, selectedStationId]);
+  }, [kioskState?.qr?.token, kioskState?.activeSession, simStreaming, selectedStationId]);
 
   // Telemetry stream interval
   useEffect(() => {

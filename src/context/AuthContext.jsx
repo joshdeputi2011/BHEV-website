@@ -85,6 +85,9 @@ export function AuthProvider({ children }) {
       method: 'PATCH',
       body: JSON.stringify({ role }),
     });
+    if (data.token) {
+      setToken(data.token);
+    }
     setUser(data.user);
     return data;
   };

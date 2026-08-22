@@ -30,10 +30,10 @@ export default function Sessions() {
   const [paySuccess, setPaySuccess] = useState(null);
 
   // Fetch active session and history
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (showLoading = false) => {
     if (!token) return;
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       const [activeRes, historyRes] = await Promise.all([
         fetch(`${API_URL}/api/v1/sessions/active`, { headers: { Authorization: `Bearer ${token}` } }),
         fetch(`${API_URL}/api/v1/sessions/me`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -47,13 +47,13 @@ export default function Sessions() {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   }, [token]);
 
   useEffect(() => {
-    loadData();
-    const timer = setInterval(loadData, 5000);
+    loadData(true);
+    const timer = setInterval(() => loadData(false), 5000);
     return () => clearInterval(timer);
   }, [loadData]);
 

@@ -72,10 +72,10 @@ export default function Navbar() {
           <div className="navbar__inner">
             <Link to="/" className="navbar__logo">
               <div className="navbar__logo-icon">
-                <img src="/urjja.svg" alt="Urjja Logo" className="navbar__logo-img" />
+                <img src="/urjaa.svg" alt="URJAA Logo" className="navbar__logo-img" width="34" height="34" />
               </div>
               <div className="navbar__logo-group">
-                <span className="navbar__logo-text">URJJA</span>
+                <span className="navbar__logo-text">URJAA</span>
                 <span className="navbar__logo-subtext">Unified EV Portal</span>
               </div>
             </Link>

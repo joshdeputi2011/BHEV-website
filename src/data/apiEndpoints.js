@@ -1,4 +1,4 @@
-/** Public URJJA Unified EV Platform API Contract. */
+/** Public URJAA Unified EV Platform API Contract. */
 const apiEndpoints = {
   auth: {
     title: 'Authentication & Users',
@@ -50,7 +50,7 @@ const apiEndpoints = {
         summary: 'Search normalized stations across all CPOs',
         auth: false,
         request: { query: 'q=Bangalore&connector=CCS2&limit=50' },
-        response: { data: [{ id: 'uuid', name: 'Koramangala Fast Hub', operator: { code: 'mock_cpo', name: 'Urjja Hub' }, connectors: [] }] },
+        response: { data: [{ id: 'uuid', name: 'Koramangala Fast Hub', operator: { code: 'mock_cpo', name: 'URJAA Hub' }, connectors: [] }] },
       },
       {
         method: 'GET',
@@ -211,7 +211,7 @@ const apiEndpoints = {
         },
         response: {
           data: { sessionId: 'uuid', amountPaid: 245.5, currency: 'INR', paymentMethod: 'UPI', transactionId: 'UPI-TXN-9847291', status: 'PAID' },
-          message: 'Payment verified! Thank you for charging with Urjja.',
+          message: 'Payment verified! Thank you for charging with URJAA.',
         },
       },
     ],

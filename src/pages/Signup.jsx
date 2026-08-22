@@ -55,12 +55,12 @@ export default function Signup() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="signup-page__logo">
-          <img src="/urjja.svg" alt="Urjja Logo" className="signup-page__logo-img" />
+          <img src="/urjaa.svg" alt="URJAA Logo" className="signup-page__logo-img" width="48" height="48" />
         </div>
 
         <h1 className="signup-page__title">Create <span className="tiranga-gradient-text">Account</span></h1>
         <p className="signup-page__subtitle">
-          Join Urjja — India's unified EV charging network
+          Join URJAA — India's unified EV charging network
         </p>
 
         {error && <div className="signup-page__error">{error}</div>}

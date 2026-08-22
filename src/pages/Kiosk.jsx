@@ -310,8 +310,8 @@ export default function Kiosk() {
       <header className="kiosk-top-bar">
         <div className="kiosk-top-bar__left">
           <Link to="/discover" className="kiosk-brand">
-            <img src="/urjja.svg" alt="Urjja Logo" className="kiosk-brand-logo" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-            <span>URJJA KIOSK</span>
+            <img src="/urjaa.svg" alt="URJAA Logo" className="kiosk-brand-logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+            <span>URJAA KIOSK</span>
           </Link>
           <div className="kiosk-station-selector">
             <BuildingRegular />

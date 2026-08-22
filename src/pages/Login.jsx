@@ -45,12 +45,12 @@ export default function Login() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="login-page__logo">
-          <img src="/urjja.svg" alt="Urjja Logo" className="login-page__logo-img" />
+          <img src="/urjaa.svg" alt="URJAA Logo" className="login-page__logo-img" width="48" height="48" />
         </div>
 
         <h1 className="login-page__title">Welcome <span className="tiranga-gradient-text">Back</span></h1>
         <p className="login-page__subtitle">
-          Sign in to your Urjja account
+          Sign in to your URJAA account
         </p>
 
         {error && <div className="login-page__error">{error}</div>}

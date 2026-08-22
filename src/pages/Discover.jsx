@@ -486,7 +486,7 @@ export default function Discover() {
           bookingType,
           emergency: bookingType === 'EMERGENCY',
           driverName: 'Website EV Driver',
-          driverEmail: 'web.driver@urjja.local',
+          driverEmail: 'web.driver@urjaa.local',
           vehicleName: evStatus?.vehicleName || 'Tata Nexon EV Max'
         })
       });
@@ -555,7 +555,7 @@ export default function Discover() {
         <div className="discover__header-row">
           <div>
             <span className="discover__eyebrow">
-              <FlashRegular /> URJJA • NATIONAL EV DISCOVERY MAP
+              <FlashRegular /> URJAA • NATIONAL EV DISCOVERY MAP
             </span>
             <h1>
               One Map. <span className="tiranga-gradient-text">29,000+ EV Chargers in India.</span>

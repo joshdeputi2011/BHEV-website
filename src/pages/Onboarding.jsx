@@ -93,7 +93,7 @@ export default function Onboarding() {
                 Welcome{user?.name ? `, ${user.name.split(' ')[0]}` : ''}! 👋
               </h1>
               <p className="onboarding__subtitle">
-                How will you use Urjja?
+                How will you use URJAA?
               </p>
 
               <div className="onboarding__roles">
@@ -156,8 +156,8 @@ export default function Onboarding() {
               </h1>
               <p className="onboarding__subtitle">
                 {selectedRole === 'operator'
-                  ? 'Here\'s what you can do as a Station Operator on Urjja'
-                  : 'Here\'s what you can do as an EV Driver on Urjja'
+                  ? 'Here\'s what you can do as a Station Operator on URJAA'
+                  : 'Here\'s what you can do as an EV Driver on URJAA'
                 }
               </p>
 

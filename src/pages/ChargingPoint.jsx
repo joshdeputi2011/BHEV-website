@@ -15,57 +15,23 @@ import {
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
+import QRCode from 'qrcode';
 import './ChargingPoint.css';
 
-// ── Minimal QR Code renderer (canvas-based, no external dep) ──
-function drawQR(canvas, text, size = 200) {
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = size;
-  canvas.height = size;
-
-  // Simple visual pattern from text hash (not a real QR — use a lib in production)
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, size, size);
-
-  const modules = 25;
-  const cellSize = size / modules;
-  ctx.fillStyle = '#0B0D0F';
-
-  // Generate pseudo-random pattern from text
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = ((hash << 5) - hash) + text.charCodeAt(i);
-    hash |= 0;
-  }
-
-  // Fixed patterns (position markers)
-  const drawFinder = (x, y) => {
-    for (let r = 0; r < 7; r++) {
-      for (let c = 0; c < 7; c++) {
-        if (r === 0 || r === 6 || c === 0 || c === 6 ||
-            (r >= 2 && r <= 4 && c >= 2 && c <= 4)) {
-          ctx.fillRect((x + c) * cellSize, (y + r) * cellSize, cellSize, cellSize);
-        }
-      }
-    }
-  };
-
-  drawFinder(0, 0);
-  drawFinder(modules - 7, 0);
-  drawFinder(0, modules - 7);
-
-  // Data area with seeded pattern
-  let seed = Math.abs(hash);
-  for (let r = 0; r < modules; r++) {
-    for (let c = 0; c < modules; c++) {
-      // Skip finder patterns
-      if ((r < 8 && c < 8) || (r < 8 && c > modules - 9) || (r > modules - 9 && c < 8)) continue;
-      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-      if (seed % 3 === 0) {
-        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-      }
-    }
+async function drawQR(canvas, text, size = 200) {
+  if (!canvas || !text) return;
+  try {
+    await QRCode.toCanvas(canvas, text, {
+      width: size,
+      margin: 1,
+      errorCorrectionLevel: 'M',
+      color: {
+        dark: '#0B0D0F',
+        light: '#ffffff',
+      },
+    });
+  } catch (err) {
+    console.error('Failed to render QR code:', err);
   }
 }
 

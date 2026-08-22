@@ -35,10 +35,13 @@ import {
   StopRegular,
   StopFilled,
   ArrowRightRegular,
-  NavigationRegular
+  NavigationRegular,
+  GlobeRegular,
+  SearchRegular
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
+import BookingModal from '../components/BookingModal';
 import QRCode from 'qrcode';
 import './Operator.css';
 
@@ -87,6 +90,12 @@ export default function Operator() {
   // Domain Data States
   const [profile, setProfile] = useState(null);
   const [stations, setStations] = useState([]);
+  const [nationalStations, setNationalStations] = useState([]);
+  const [stationScope, setStationScope] = useState('national'); // 'national' | 'my'
+  const [stationSearchQuery, setStationSearchQuery] = useState('');
+  const [stationStateFilter, setStationStateFilter] = useState('');
+  const [stationConnectorFilter, setStationConnectorFilter] = useState('');
+  const [operatorBookingStation, setOperatorBookingStation] = useState(null);
   const [selectedStation, setSelectedStation] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [bookingStatusFilter, setBookingStatusFilter] = useState('ALL');
@@ -197,6 +206,17 @@ export default function Operator() {
       }
 
       setStations(stData);
+
+      // Load full National Registry (29,000+ stations)
+      try {
+        const pubAll = await fetch(`${API_URL}/api/v1/stations`).then((r) => r.json());
+        if (pubAll?.data && Array.isArray(pubAll.data)) {
+          setNationalStations(pubAll.data);
+        }
+      } catch (e3) {
+        // ignore
+      }
+
       if (stData.length > 0) {
         setSelectedStation((prev) => {
           if (!prev) return stData[0];
@@ -800,98 +820,189 @@ export default function Operator() {
               <motion.div key="stations" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <div className="op-section-head">
                   <div>
-                    <h2>Station Management</h2>
-                    <p>Configure your physical charging sites, addresses, operating hours, and base tariffs.</p>
+                    <h2>Station Management &amp; National Grid</h2>
+                    <p>Monitor the national 29,000+ charging network, inspect charger bays, or configure your physical CPO sites.</p>
                   </div>
                   <button className="btn-primary" onClick={() => setShowAddStation(true)}>
-                    <AddRegular /> Add New Station
+                    <AddRegular /> Add Custom Station
                   </button>
                 </div>
 
-                <div className="op-stations-grid">
-                  {stations.map((st) => (
-                    <article key={st.id} className="op-station-card glass">
-                      <div className="op-station-card__top">
-                        <div>
-                          <div className="op-station-card__city">{st.city}, {st.state}</div>
-                          <h3 className="op-station-card__title">{st.name}</h3>
-                          <p className="op-station-card__addr">{st.address}</p>
-                        </div>
-                        <span className={`op-badge op-badge--${st.status === 'ACTIVE' ? 'avail' : 'maint'}`}>
-                          {st.status || 'ACTIVE'}
-                        </span>
-                      </div>
-
-                      <div className="op-station-specs">
-                        <div>
-                          <span>Connectors:</span>
-                          <strong>{st.connectors?.length || 1} EVSE ({st.connectors?.[0]?.standard || 'CCS2'})</strong>
-                        </div>
-                        <div>
-                          <span>Max Power:</span>
-                          <strong>{st.connectors?.[0]?.maxPowerKw || 60} kW</strong>
-                        </div>
-                        <div>
-                          <span>Base Tariff:</span>
-                          <strong style={{ color: '#10b981' }}>₹{st.tariff?.pricePerKwh || 14.5}/kWh</strong>
-                        </div>
-                        <div>
-                          <span>Reliability:</span>
-                          <strong>{st.reliability?.score || 96}%</strong>
-                        </div>
-                      </div>
-
-                      <footer className="op-station-card__foot">
-                        <button
-                          className="btn-secondary btn-sm"
-                          onClick={() => {
-                            setSelectedStation(st);
-                            setStationForm({
-                              name: st.name,
-                              address: st.address,
-                              city: st.city,
-                              state: st.state,
-                              latitude: st.latitude,
-                              longitude: st.longitude,
-                              connectorStandard: st.connectors?.[0]?.standard || 'CCS2',
-                              powerType: st.connectors?.[0]?.powerType || 'DC',
-                              maxPowerKw: st.connectors?.[0]?.maxPowerKw || 60,
-                              pricePerKwh: st.tariff?.pricePerKwh || 14.5,
-                              flatFee: st.tariff?.flatFee || 20.0,
-                              rating: st.rating || 4.8
-                            });
-                            setShowEditStation(true);
-                          }}
-                        >
-                          <EditRegular /> Edit
-                        </button>
-                        <button
-                          className="btn-secondary btn-sm"
-                          onClick={() => {
-                            setSelectedStation(st);
-                            setShowAddCharger(true);
-                          }}
-                        >
-                          <AddRegular /> Add Charger
-                        </button>
-                        <Link to={`/kiosk/${st.id}`} className="btn-primary btn-sm">
-                          <GaugeRegular /> Kiosk
-                        </Link>
-                      </footer>
-                    </article>
-                  ))}
-
-                  {stations.length === 0 && (
-                    <div className="glass op-empty-card">
-                      <BuildingRegular style={{ fontSize: '2.5rem', marginBottom: 12 }} />
-                      <h3>No Charging Stations Registered</h3>
-                      <p>Add your first public or private charging hub to connect it to the national grid.</p>
-                      <button className="btn-primary btn-sm" onClick={() => setShowAddStation(true)}>
-                        <AddRegular /> Add Station
-                      </button>
-                    </div>
-                  )}
+                {/* Scope Switcher Tabs */}
+                <div className="sessions-tab-bar" style={{ marginBottom: 16 }}>
+                  <button
+                    className={`sessions-tab-btn ${stationScope === 'national' ? 'sessions-tab-btn--active' : ''}`}
+                    onClick={() => setStationScope('national')}
+                  >
+                    <GlobeRegular /> 🇮🇳 All National Stations (29,000+ Grid)
+                    <span className="sessions-tab-badge">
+                      {nationalStations.length > 0 ? `${nationalStations.length.toLocaleString('en-IN')}` : '29,000+'}
+                    </span>
+                  </button>
+                  <button
+                    className={`sessions-tab-btn ${stationScope === 'my' ? 'sessions-tab-btn--active' : ''}`}
+                    onClick={() => setStationScope('my')}
+                  >
+                    <BuildingRegular /> ⚡ My CPO Stations ({stations.length})
+                  </button>
                 </div>
+
+                {/* Search & Filter Bar */}
+                <div className="glass" style={{ padding: 14, borderRadius: 14, marginBottom: 20, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <input
+                    className="discover__search-input"
+                    style={{ flex: 1, minWidth: 220, padding: '8px 12px' }}
+                    placeholder="Search by station name, CPO, city, district, address..."
+                    value={stationSearchQuery}
+                    onChange={(e) => setStationSearchQuery(e.target.value)}
+                  />
+
+                  <select
+                    value={stationStateFilter}
+                    onChange={(e) => setStationStateFilter(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', color: 'inherit', border: '1px solid rgba(255,255,255,0.1)' }}
+                  >
+                    <option value="">All States &amp; UTs</option>
+                    {Array.from(new Set((stationScope === 'national' ? nationalStations : stations).map((s) => s.state).filter(Boolean))).sort().map((stName) => (
+                      <option key={stName} value={stName}>{stName}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={stationConnectorFilter}
+                    onChange={(e) => setStationConnectorFilter(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', color: 'inherit', border: '1px solid rgba(255,255,255,0.1)' }}
+                  >
+                    <option value="">All Connector Standards</option>
+                    <option value="CCS2">CCS-2 (DC Fast)</option>
+                    <option value="Type2">Type 2 AC</option>
+                    <option value="GBT">GB/T (DC Fast)</option>
+                    <option value="CHAdeMO">CHAdeMO</option>
+                  </select>
+                </div>
+
+                {/* Stations List */}
+                {(() => {
+                  const sourceList = stationScope === 'national'
+                    ? (nationalStations.length > 0 ? nationalStations : stations)
+                    : stations;
+
+                  const filtered = sourceList.filter((st) => {
+                    if (stationStateFilter && st.state?.toLowerCase() !== stationStateFilter.toLowerCase()) return false;
+                    if (stationConnectorFilter) {
+                      const hasConn = (st.connectors || []).some((c) => (c.standard || '').toUpperCase().includes(stationConnectorFilter.toUpperCase())) ||
+                        (st.connectorsList || []).some((c) => String(c).toUpperCase().includes(stationConnectorFilter.toUpperCase()));
+                      if (!hasConn) return false;
+                    }
+                    if (stationSearchQuery.trim()) {
+                      const q = stationSearchQuery.toLowerCase();
+                      const matchName = (st.name || '').toLowerCase().includes(q);
+                      const matchCity = (st.city || '').toLowerCase().includes(q);
+                      const matchAddr = (st.address || st.location || '').toLowerCase().includes(q);
+                      const matchCpo = (st.cpo || st.operator?.name || '').toLowerCase().includes(q);
+                      return matchName || matchCity || matchAddr || matchCpo;
+                    }
+                    return true;
+                  });
+
+                  return (
+                    <div>
+                      <div style={{ marginBottom: 12, fontSize: '0.86rem', color: 'var(--text-tertiary)' }}>
+                        Showing {Math.min(filtered.length, 120)} of {filtered.length.toLocaleString('en-IN')} stations
+                      </div>
+
+                      <div className="op-stations-grid">
+                        {filtered.slice(0, 120).map((st) => (
+                          <article key={st.id} className="op-station-card glass">
+                            <div className="op-station-card__top">
+                              <div>
+                                <div className="op-station-card__city">{st.city || 'India'}, {st.state || ''}</div>
+                                <h3 className="op-station-card__title">{st.name}</h3>
+                                <p className="op-station-card__addr">{st.address || st.location || 'Highway EV Hub'}</p>
+                              </div>
+                              <span className={`op-badge op-badge--${st.status === 'ACTIVE' || !st.status ? 'avail' : 'maint'}`}>
+                                {st.cpo || st.operator?.name || 'VERIFIED'}
+                              </span>
+                            </div>
+
+                            <div className="op-station-specs">
+                              <div>
+                                <span>Connectors:</span>
+                                <strong>{st.connectors?.length || st.connectorsList?.length || 1} EVSE ({st.connectors?.[0]?.standard || st.connectorsList?.[0] || 'CCS2'})</strong>
+                              </div>
+                              <div>
+                                <span>Max Power:</span>
+                                <strong>{st.connectors?.[0]?.maxPowerKw || st.maxPowerKw || 60} kW</strong>
+                              </div>
+                              <div>
+                                <span>Base Tariff:</span>
+                                <strong style={{ color: '#10b981' }}>₹{st.tariff?.pricePerKwh || st.pricePerKwh || 14.5}/kWh</strong>
+                              </div>
+                              <div>
+                                <span>Reliability:</span>
+                                <strong>{st.reliability?.score || st.rating || 96}%</strong>
+                              </div>
+                            </div>
+
+                            <footer className="op-station-card__foot">
+                              <button
+                                className="btn-primary btn-sm"
+                                onClick={() => setOperatorBookingStation(st)}
+                              >
+                                <CalendarRegular /> Book / Test Slot
+                              </button>
+                              <Link to={`/kiosk/${st.id}`} className="btn-secondary btn-sm">
+                                <GaugeRegular /> Kiosk
+                              </Link>
+                              <button
+                                className="btn-secondary btn-sm"
+                                onClick={() => {
+                                  setSelectedStation(st);
+                                  setActiveTab('qr');
+                                }}
+                              >
+                                <QrCodeRegular /> QR
+                              </button>
+                              {stationScope === 'my' && (
+                                <button
+                                  className="btn-secondary btn-sm"
+                                  onClick={() => {
+                                    setSelectedStation(st);
+                                    setStationForm({
+                                      name: st.name,
+                                      address: st.address,
+                                      city: st.city,
+                                      state: st.state,
+                                      latitude: st.latitude,
+                                      longitude: st.longitude,
+                                      connectorStandard: st.connectors?.[0]?.standard || 'CCS2',
+                                      powerType: st.connectors?.[0]?.powerType || 'DC',
+                                      maxPowerKw: st.connectors?.[0]?.maxPowerKw || 60,
+                                      pricePerKwh: st.tariff?.pricePerKwh || 14.5,
+                                      flatFee: st.tariff?.flatFee || 20.0,
+                                      rating: st.rating || 4.8
+                                    });
+                                    setShowEditStation(true);
+                                  }}
+                                >
+                                  <EditRegular /> Edit
+                                </button>
+                              )}
+                            </footer>
+                          </article>
+                        ))}
+
+                        {filtered.length === 0 && (
+                          <div className="glass op-empty-card" style={{ gridColumn: '1 / -1' }}>
+                            <BuildingRegular style={{ fontSize: '2.5rem', marginBottom: 12 }} />
+                            <h3>No Matching Stations Found</h3>
+                            <p>Try clearing search keywords or selecting another state.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
               </motion.div>
             )}
 
@@ -1946,6 +2057,15 @@ export default function Operator() {
           </div>
         )}
       </AnimatePresence>
+      {/* ── Operator Direct Booking Test Modal ── */}
+      {operatorBookingStation && (
+        <BookingModal
+          station={operatorBookingStation}
+          isOpen={!!operatorBookingStation}
+          onClose={() => setOperatorBookingStation(null)}
+          onBookingSuccess={() => fetchAllData()}
+        />
+      )}
     </main>
   );
 }

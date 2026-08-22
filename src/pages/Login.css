@@ -22,24 +22,19 @@
 }
 
 .login-page__logo {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-md);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-accent);
+  height: 56px;
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto var(--space-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-accent);
 }
 
 .login-page__logo-img {
-  width: 100%;
-  height: 100%;
+  height: 56px;
+  width: auto;
+  max-width: 130px;
   object-fit: contain;
-  padding: 4px;
 }
 
 .login-page__title {

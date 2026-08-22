@@ -71,13 +71,14 @@ export default function Navbar() {
       <header className={`navbar-wrapper ${scrolled ? 'navbar-wrapper--scrolled' : ''}`}>
         <nav className="navbar">
           <div className="navbar__inner">
-            <Link to="/" className="navbar__logo">
-              <div className="navbar__logo-icon">
-                <img src={urjaaLogo} alt="URJAA Logo" className="navbar__logo-img" width="34" height="34" />
-              </div>
-              <div className="navbar__logo-group">
-                <span className="navbar__logo-text">URJAA</span>
-                <span className="navbar__logo-subtext">Unified EV Portal</span>
+            <Link to="/" className="navbar__logo" id="nav-brand-logo">
+              <div className="navbar__brand-wrap">
+                <img
+                  src={urjaaLogo}
+                  alt="URJAA"
+                  className="navbar__brand-logo"
+                />
+                <span className="navbar__brand-tagline">UNIFIED EV PORTAL</span>
               </div>
             </Link>
 

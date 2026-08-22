@@ -288,10 +288,10 @@ const booking = await fetch('/api/v1/bookings', {
         <div className="container">
           <div className="landing__footer-inner">
             <div className="landing__footer-brand">
-              <div className="navbar__logo-icon" style={{ width: 36, height: 36, minWidth: 36, minHeight: 36 }}>
-                <img src={urjaaLogo} alt="URJAA Logo" className="navbar__logo-img" width="28" height="28" />
+              <div className="navbar__brand-wrap">
+                <img src={urjaaLogo} alt="URJAA" className="navbar__brand-logo" style={{ height: 38 }} />
+                <span className="navbar__brand-tagline">UNIFIED EV INFRASTRUCTURE</span>
               </div>
-              <span style={{ fontWeight: 800, letterSpacing: 0.5, fontSize: '1rem' }}>URJAA • UEI</span>
             </div>
             <div className="landing__footer-links">
               <Link to="/">Home</Link>

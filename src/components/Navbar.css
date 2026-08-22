@@ -39,65 +39,47 @@
 .navbar__logo {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
   color: var(--text-primary);
   flex-shrink: 0;
+  padding: 2px 0;
 }
 
-.navbar__logo-icon {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(19, 23, 32, 0.9);
-  border: 1px solid var(--border-accent);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.15);
-  transition: transform 0.15s ease, border-color 0.15s ease;
-  flex-shrink: 0;
-}
-
-.navbar__logo-img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  display: block;
-}
-
-[data-theme="gov"] .navbar__logo-icon {
-  background: #FFF7ED;
-  border-color: #FDBA74;
-  box-shadow: 0 2px 12px rgba(234, 88, 12, 0.15);
-}
-
-.navbar__logo:hover .navbar__logo-icon {
-  transform: scale(1.05);
-}
-
-.navbar__logo-group {
+.navbar__brand-wrap {
   display: flex;
   flex-direction: column;
-  line-height: 1.15;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1;
 }
 
-.navbar__logo-text {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  color: var(--text-primary);
+.navbar__brand-logo {
+  height: 46px;
+  width: auto;
+  max-width: 100px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
 }
 
-.navbar__logo-subtext {
-  font-size: 0.68rem;
-  color: var(--text-tertiary);
-  font-weight: 600;
+.navbar__logo:hover .navbar__brand-logo {
+  transform: scale(1.04);
+}
+
+.navbar__brand-tagline {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  line-height: 1;
+  margin-top: 2px;
+  padding-left: 1px;
+}
+
+[data-theme="gov"] .navbar__brand-tagline {
+  color: #475569;
 }
 
 /* ── Navigation Links ── */

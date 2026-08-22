@@ -69,6 +69,22 @@ const steps = [
   },
   {
     stepNumber: '04',
+    title: 'Touchscreen Kiosk Simulator',
+    tag: 'Kiosk • /kiosk',
+    path: '/kiosk',
+    icon: <FlashRegular />,
+    heading: 'Physical Station Kiosk Experience',
+    description:
+      'Experience how drivers interact with an on-ground charging station kiosk — from slot selection and RFID/QR check-in to live charging telemetry.',
+    highlights: [
+      'Simulate the physical hardware terminal of an EV charger.',
+      'Test plug-in, charge rate (kW), battery percentage, and energy delivered.',
+      'Complete mock UPI payment and print digital receipts.',
+    ],
+    actionLabel: 'Try Kiosk Simulator',
+  },
+  {
+    stepNumber: '05',
     title: 'CPO Simulator Console',
     tag: 'Operator • /operator',
     path: '/operator',
@@ -85,7 +101,7 @@ const steps = [
     actionLabel: 'Open Simulator',
   },
   {
-    stepNumber: '05',
+    stepNumber: '06',
     title: 'Admin Governance Portal',
     tag: 'Admin • /admin',
     path: '/admin',
@@ -101,7 +117,7 @@ const steps = [
     actionLabel: 'Go to Admin',
   },
   {
-    stepNumber: '06',
+    stepNumber: '07',
     title: 'Dual Theme Customization',
     tag: 'Appearance',
     path: '/',

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   Operator Console Stylesheet — Dual Mode & Feature Rich
+   CHARGEGRID Operator Console Stylesheet
    ═══════════════════════════════════════════════════ */
 
 .operator-page {
@@ -32,18 +32,10 @@
   line-height: 1.55;
 }
 
-.operator-page__message {
-  color: #D97706;
+.operator-page__actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 16px;
-  padding: 10px 14px;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: var(--radius-sm);
-  font-size: 0.84rem;
-  font-weight: 500;
 }
 
 /* Tabs */
@@ -93,16 +85,16 @@
 /* Grid Layout */
 .operator-page__grid {
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 20px;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
 }
 
 .operator-page__stations {
   padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 600px;
+  gap: 8px;
+  max-height: 620px;
   overflow-y: auto;
 }
 
@@ -110,13 +102,13 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
+  gap: 6px;
+  padding: 14px 16px;
   color: var(--text-secondary);
   background: transparent;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
-  transition: all 0.12s ease;
+  transition: all 0.15s ease;
   cursor: pointer;
 }
 
@@ -136,19 +128,42 @@
   border-color: #FED7AA;
 }
 
+.operator-page__station-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .operator-page__station strong {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  color: var(--text-primary);
+}
+
+.operator-page__rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  padding: 2px 8px;
+  border-radius: 6px;
 }
 
 .operator-page__station span,
 .operator-page__station small {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-tertiary);
 }
 
+/* Detail Display Panel */
 .operator-page__display {
   padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .operator-page__display-head {
@@ -158,235 +173,178 @@
   gap: 16px;
 }
 
-.operator-page__display-head p {
-  color: var(--text-tertiary);
-  font-size: 0.76rem;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 600;
-}
-
-.operator-page__display h2 {
-  margin-top: 4px;
-  font-size: 1.35rem;
+.operator-page__display-head h2 {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
-.operator-page__qr {
-  min-height: 180px;
-  margin: 20px 0 12px;
-  padding: 20px;
+/* Dynamic QR Halo Box */
+.operator-qr-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 12px;
+  padding: 24px;
+  border-radius: 20px;
   background: var(--bg-secondary);
-  border: 1px dashed var(--border-medium);
-  border-radius: var(--radius-lg);
+  border: 2px solid;
+  transition: all 0.3s ease;
+  margin: 8px 0;
 }
 
-.operator-page__qr svg {
-  font-size: 64px;
-  color: var(--accent);
+.operator-qr-container--available {
+  border-color: #10b981;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.3), inset 0 0 15px rgba(16, 185, 129, 0.1);
 }
 
-[data-theme="gov"] .operator-page__qr svg {
-  color: var(--saffron-dark);
+.operator-qr-container--in-use {
+  border-color: #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.35), inset 0 0 15px rgba(239, 68, 68, 0.1);
 }
 
-.operator-page__qr code {
-  width: 100%;
-  max-height: 44px;
-  overflow: hidden;
-  word-break: break-all;
-  color: var(--text-tertiary);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  text-align: center;
+.operator-qr-canvas-box {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 16px;
+  display: inline-flex;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-.operator-page__expiry {
-  color: var(--text-tertiary);
-  font-size: 0.78rem;
-  font-family: var(--font-mono);
-  margin-bottom: 16px;
+.operator-qr-canvas-box canvas {
+  display: block;
 }
 
-.operator-page__connectors {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-}
-
-.operator-page__connectors div {
-  padding: 12px 14px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.operator-page__connectors strong {
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.operator-page__connectors span {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-  font-family: var(--font-mono);
-}
-
-/* CP Link */
-.operator-page__cp-link {
+.operator-qr-halo-status {
+  margin-top: 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 20px;
-  padding: 10px 16px;
-  background: var(--accent-subtle);
-  border: 1px solid var(--border-accent);
-  border-radius: var(--radius-md);
-  color: var(--accent);
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.operator-page__cp-link:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+.operator-qr-halo-status--available {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-[data-theme="gov"] .operator-page__cp-link {
-  background: #FFF7ED;
-  color: var(--saffron-dark);
-  border-color: #FED7AA;
+.operator-qr-halo-status--in-use {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* Schedules Tab */
-.operator-page__schedules {
-  display: flex;
-  flex-direction: column;
+/* Tariff specs strip */
+.operator-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
 }
 
-.operator-page__booking-card {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 16px;
-  align-items: center;
-  padding: 16px 20px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
+.operator-spec-card {
   background: var(--bg-surface);
-}
-
-.operator-page__booking-field {
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.operator-page__booking-label {
+.operator-spec-label {
   font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   color: var(--text-muted);
-}
-
-.operator-page__booking-value {
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.operator-page__booking-status {
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
-.operator-page__booking-status--confirmed {
-  background: rgba(16, 185, 129, 0.12);
-  color: #10B981;
+.operator-spec-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
-.operator-page__booking-status--arrived {
-  background: rgba(59, 130, 246, 0.12);
-  color: #3B82F6;
+/* Modal for Adding Station */
+.station-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-.operator-page__booking-status--charging {
-  background: rgba(168, 85, 247, 0.12);
-  color: #A855F7;
-}
-
-/* API Tab */
-.operator-page__api-section {
-  max-width: 760px;
+.station-modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: 28px;
+  padding: 32px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.station-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.operator-page__api-card {
-  padding: 24px;
-  border-radius: var(--radius-lg);
+@media (max-width: 600px) {
+  .station-modal-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.operator-page__api-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: 8px;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.operator-page__api-card p {
-  font-size: 0.9rem;
+.form-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 12px;
 }
 
-.operator-page__api-endpoint {
-  font-family: var(--font-mono);
-  font-size: 0.84rem;
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
   background: var(--bg-secondary);
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  color: var(--accent);
-  word-break: break-all;
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
 }
 
-[data-theme="gov"] .operator-page__api-endpoint {
-  color: var(--saffron-dark);
+.form-input:focus {
+  border-color: var(--accent);
 }
 
 @media (max-width: 800px) {
-  .operator-page__header,
-  .operator-page__display-head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
   .operator-page__grid {
     grid-template-columns: 1fr;
   }
-
   .operator-page__stations {
-    max-height: 260px;
-  }
-
-  .operator-page__booking-card {
-    grid-template-columns: 1fr 1fr;
+    max-height: 280px;
   }
 }

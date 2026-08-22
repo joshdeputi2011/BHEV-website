@@ -348,8 +348,13 @@ export default function Kiosk() {
                   Scan the rotating HMAC code to confirm slot arrival and start DC fast charging.
                 </p>
 
-                <div className="kiosk-qr-box">
-                  <canvas ref={qrCanvasRef} width={200} height={200} />
+                <div className={`kiosk-qr-halo-wrapper ${isReserved ? 'kiosk-qr-halo--reserved' : 'kiosk-qr-halo--available'}`}>
+                  <div className="kiosk-qr-box">
+                    <canvas ref={qrCanvasRef} width={200} height={200} />
+                  </div>
+                  <div className={`kiosk-qr-status-tag ${isReserved ? 'kiosk-qr-status-tag--reserved' : 'kiosk-qr-status-tag--available'}`}>
+                    {isReserved ? '🔴 RESERVED / SLOT ACTIVE' : '🟢 OPEN / READY TO SCAN'}
+                  </div>
                 </div>
 
                 <div className="kiosk-qr-notice">

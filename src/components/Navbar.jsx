@@ -44,13 +44,19 @@ export default function Navbar() {
   const baseLinks = [
     { to: '/', label: 'Home' },
     { to: '/discover', label: 'Discover' },
+    { to: '/kiosk', label: 'Kiosk' },
     { to: '/docs', label: 'API Docs' },
   ];
 
+  // Show Sessions when authenticated
+  const linksWithSessions = isAuthenticated
+    ? [...baseLinks.slice(0, 2), { to: '/sessions', label: 'My Sessions' }, ...baseLinks.slice(2)]
+    : baseLinks;
+
   // Only show Operator link for operator/admin roles
   const linksWithOp = isAuthenticated && (user?.role === 'operator' || user?.role === 'admin')
-    ? [...baseLinks, { to: '/operator', label: 'Operator' }]
-    : baseLinks;
+    ? [...linksWithSessions, { to: '/operator', label: 'Operator' }]
+    : linksWithSessions;
 
   // Add admin link for admin role
   const allLinks = isAuthenticated && user?.role === 'admin'

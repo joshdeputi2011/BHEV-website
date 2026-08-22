@@ -298,6 +298,11 @@ export default function Kiosk() {
   const tariffRate = Number(kioskState?.tariff?.pricePerKwh || 14.5);
   const flatFee = Number(kioskState?.tariff?.flatFee || 20.0);
   const currentCost = (Number(energyKwh) * tariffRate + (simStreaming ? flatFee : 0)).toFixed(2);
+  const activeSession = kioskState?.activeSession;
+  const isCharging = simStreaming || !!activeSession;
+  const visualState = kioskState?.visualState || (isCharging ? 'CHARGING' : 'FREE');
+  const kioskTone = String(kioskState?.kioskColor || (isCharging ? 'ORANGE' : 'GREEN')).toLowerCase();
+  const carName = activeSession?.vehicleName || activeSession?.carName || 'Tata Nexon EV Max';
 
   return (
     <main className="kiosk-page">
@@ -351,13 +356,26 @@ export default function Kiosk() {
             <p>Scan with BHEV mobile app or any UEI interoperable EV wallet.</p>
           </div>
 
-          <div className={`kiosk-qr-box ${simStreaming ? 'kiosk-qr-box--active' : ''}`}>
-            <canvas ref={qrCanvasRef} width={200} height={200} />
+          <div className={`kiosk-qr-box kiosk-qr-box--${kioskTone} ${isCharging ? 'kiosk-qr-box--active' : ''}`}>
+            {isCharging ? (
+              <div className="kiosk-live-session-card">
+                <VehicleCarRegular className="kiosk-live-session-card__icon" />
+                <strong>{carName}</strong>
+                <span>{visualState} • {liveSoc}% SoC</span>
+                <div>
+                  <b>{livePowerKw} kW</b>
+                  <b>{energyKwh} kWh</b>
+                  <b>₹{currentCost}</b>
+                </div>
+              </div>
+            ) : (
+              <canvas ref={qrCanvasRef} width={200} height={200} />
+            )}
           </div>
 
           <div className="kiosk-qr-status">
-            <span className={`kiosk-status-dot ${simStreaming ? 'kiosk-status-dot--charging' : 'kiosk-status-dot--ready'}`} />
-            <strong>{simStreaming ? 'Charging in Progress' : 'Ready for Walk-in Scan'}</strong>
+            <span className={`kiosk-status-dot ${isCharging ? 'kiosk-status-dot--charging' : 'kiosk-status-dot--ready'}`} />
+            <strong>{isCharging ? 'Charging in Progress' : visualState === 'BOOKED' ? 'Booked Driver Check-in' : 'Ready for Walk-in Scan'}</strong>
           </div>
 
           {/* Quick Simulation Trigger */}

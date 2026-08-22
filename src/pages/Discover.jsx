@@ -5,7 +5,12 @@ import {
   FlashRegular,
   LocationRegular,
   ArrowResetRegular,
-  GlobeRegular
+  GlobeRegular,
+  CalendarRegular,
+  PeopleRegular,
+  AlertUrgentRegular,
+  VehicleCarRegular,
+  PlugConnectedRegular
 } from '@fluentui/react-icons';
 import MapplsStationMap from '../components/MapplsStationMap';
 import './Discover.css';
@@ -85,6 +90,10 @@ export default function Discover() {
   const [locating, setLocating] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
   const [fitTrigger, setFitTrigger] = useState(0);
+  const [bookingBusy, setBookingBusy] = useState('');
+  const [bookingResult, setBookingResult] = useState(null);
+  const [evStatus, setEvStatus] = useState(null);
+  const [evBusy, setEvBusy] = useState(false);
 
   // Debounce search query to keep typing ultra-fluid
   useEffect(() => {
@@ -434,13 +443,94 @@ export default function Discover() {
 
   // Navigation link generator
   const navigateStation = (station) => {
-    const origin = userLocation ? `${userLocation.lat},${userLocation.lng}` : 'Current+Location';
     const dest = `${station.latitude},${station.longitude}`;
     window.open(
-      `https://www.mappls.com/direction?source=${origin}&destination=${dest}`,
+      `https://www.google.com/maps/dir/?api=1&destination=${dest}`,
       '_blank',
       'noopener,noreferrer'
     );
+  };
+
+  const bestConnectorFor = (station) => {
+    const connectors = Array.isArray(station.connectors) ? station.connectors : [];
+    return (
+      connectors.find((connector) => String(connector.status).toUpperCase() === 'AVAILABLE') ||
+      connectors.find((connector) => connector.id) ||
+      null
+    );
+  };
+
+  const bookStation = async (station, bookingType = 'STANDARD') => {
+    const connector = bestConnectorFor(station);
+    if (!connector) {
+      setBookingResult({
+        type: 'error',
+        title: 'Connector data missing',
+        message: 'This station has not published connector-level booking data yet.'
+      });
+      return;
+    }
+
+    const key = `${station.id}-${connector.id}-${bookingType}`;
+    setBookingBusy(key);
+    try {
+      const start = new Date(Date.now() + 5 * 60 * 1000);
+      const res = await fetch(`${api}/api/v1/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          locationId: station.id,
+          connectorId: connector.id,
+          slotStart: start.toISOString(),
+          slotEnd: new Date(start.getTime() + 60 * 60 * 1000).toISOString(),
+          bookingType,
+          emergency: bookingType === 'EMERGENCY',
+          driverName: 'Website EV Driver',
+          driverEmail: 'web.driver@urjja.local',
+          vehicleName: evStatus?.vehicleName || 'Tata Nexon EV Max'
+        })
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || payload.message || 'Booking failed');
+      setBookingResult({
+        type: bookingType,
+        title: payload.message || 'Booking created',
+        message: `${payload.data.bookingRef || payload.data.externalRef} • ${payload.data.stationName || station.name}`,
+        data: payload.data
+      });
+      const liveRes = await fetch(`${api}/api/v1/stations?limit=100`);
+      if (liveRes.ok) {
+        const live = await liveRes.json();
+        const liveData = live.data || [];
+        if (liveData.length > 0) setAllStations(liveData.map((s) => ({ ...s, latitude: Number(s.latitude), longitude: Number(s.longitude), maxPowerKw: Number(s.maxPowerKw || 0), connectorsList: (s.connectors || []).map((c) => c.standard || c), nameNorm: normalizeText(s.name), cityNorm: normalizeText(s.city), districtNorm: normalizeText(s.district), cpoNorm: normalizeText(s.cpo || s.operator?.name), stateNorm: normalizeText(s.state), _search: normalizeText(`${s.name} ${s.city} ${s.address} ${s.operator?.name}`) })));
+      }
+    } catch (err) {
+      setBookingResult({
+        type: 'error',
+        title: 'Booking could not be completed',
+        message: err.message || 'Please try again.'
+      });
+    } finally {
+      setBookingBusy('');
+    }
+  };
+
+  const connectMockEv = async () => {
+    setEvBusy(true);
+    try {
+      const res = await fetch(`${api}/api/v1/iot/mock-ev/connect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vehicleName: 'Tata Nexon EV Max', bluetoothId: 'BHEV-WEB-BLE-01' })
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || payload.message || 'Could not connect EV');
+      setEvStatus(payload.data);
+    } catch (err) {
+      setBookingResult({ type: 'error', title: 'Bluetooth EV mock failed', message: err.message });
+    } finally {
+      setEvBusy(false);
+    }
   };
 
   const statesList = meta.states && meta.states.length > 0 ? meta.states : [];
@@ -622,6 +712,26 @@ export default function Discover() {
               <span>{debouncedQuery || selectedState ? 'Matches Found' : userLocation ? 'Nearby Visible' : 'Visible'}</span>
             </div>
           </div>
+
+          <div className="discover__ev-row">
+            <button className="btn-secondary btn-sm" onClick={connectMockEv} disabled={evBusy}>
+              <VehicleCarRegular /> {evBusy ? 'Connecting...' : evStatus ? 'EV Connected' : 'Connect Mock EV'}
+            </button>
+            {evStatus && (
+              <div className="discover__ev-status">
+                <PlugConnectedRegular />
+                <span>{evStatus.vehicleName}</span>
+                <strong>{Math.round(evStatus.socPercent)}% SoC</strong>
+                <span>{evStatus.rangeKm} km range</span>
+              </div>
+            )}
+            {bookingResult && (
+              <div className={`discover__booking-toast discover__booking-toast--${bookingResult.type}`}>
+                <strong>{bookingResult.title}</strong>
+                <span>{bookingResult.message}</span>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -675,6 +785,10 @@ export default function Discover() {
               {filteredStations.slice(0, 150).map((station) => {
                 const cpoName = station.cpo || station.operator?.name || 'Operator';
                 const isSelected = selectedStation?.id === station.id;
+                const connector = bestConnectorFor(station);
+                const chargerSummary = station.chargerSummary || {};
+                const chargerStatus = station.chargerStatus || connector?.visualState || connector?.status || 'UNKNOWN';
+                const actionKey = connector ? `${station.id}-${connector.id}` : station.id;
 
                 return (
                   <article
@@ -722,6 +836,16 @@ export default function Discover() {
                       <span className="discover__tag discover__tag--source">BEE Static</span>
                     </div>
 
+                    <div className={`discover__charger-strip discover__charger-strip--${String(chargerStatus).toLowerCase()}`}>
+                      <div>
+                        <strong>{chargerStatus}</strong>
+                        <span>
+                          {chargerSummary.available ?? station.availableConnectors ?? 0} free • {chargerSummary.booked ?? 0} booked • {chargerSummary.charging ?? 0} charging
+                        </span>
+                      </div>
+                      <small>{station.nextAvailableMins === 0 ? 'Ready now' : `${station.nextAvailableMins || 15} min wait`}</small>
+                    </div>
+
                     <footer className="discover__card-actions">
                       <button
                         className="btn-secondary btn-sm"
@@ -739,9 +863,42 @@ export default function Discover() {
                           navigateStation(station);
                         }}
                       >
-                        <NavigationRegular /> Navigate
+                        <NavigationRegular /> Google route
                       </button>
                     </footer>
+
+                    <div className="discover__booking-actions">
+                      <button
+                        className="btn-primary btn-xs"
+                        disabled={!connector || bookingBusy === `${actionKey}-STANDARD`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          bookStation(station, 'STANDARD');
+                        }}
+                      >
+                        <CalendarRegular /> {bookingBusy === `${actionKey}-STANDARD` ? 'Booking...' : 'Book'}
+                      </button>
+                      <button
+                        className="btn-secondary btn-xs"
+                        disabled={!connector || bookingBusy === `${actionKey}-QUEUE`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          bookStation(station, 'QUEUE');
+                        }}
+                      >
+                        <PeopleRegular /> Queue
+                      </button>
+                      <button
+                        className="btn-secondary btn-xs discover__emergency-btn"
+                        disabled={!connector || bookingBusy === `${actionKey}-EMERGENCY`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          bookStation(station, 'EMERGENCY');
+                        }}
+                      >
+                        <AlertUrgentRegular /> Emergency
+                      </button>
+                    </div>
                   </article>
                 );
               })}

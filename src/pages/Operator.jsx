@@ -89,6 +89,8 @@ export default function Operator() {
   const [stations, setStations] = useState([]);
   const [selectedStation, setSelectedStation] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [bookingStatusFilter, setBookingStatusFilter] = useState('ALL');
+  const [bookingSearchQuery, setBookingSearchQuery] = useState('');
   const [queue, setQueue] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -502,6 +504,19 @@ export default function Operator() {
       setNotifications((prev) => prev.map((n) => (n.id === notifId ? { ...n, isRead: true } : n)));
     } catch (err) {
       // ignore
+    }
+  };
+
+  const handleUpdateBookingStatus = async (bookingId, status) => {
+    try {
+      await apiRequest(`/api/v1/operator/bookings/${bookingId}/status`, {
+        method: 'POST',
+        body: JSON.stringify({ status })
+      });
+      setToast(`Booking ${status.toLowerCase()} successfully.`);
+      fetchAllData();
+    } catch (err) {
+      setToast(`Failed to update booking: ${err.message}`);
     }
   };
 
@@ -949,9 +964,64 @@ export default function Operator() {
                     <h2>Bookings &amp; Reservation Schedules</h2>
                     <p>Track advance reservations, driver arrival status, and slot validity windows.</p>
                   </div>
-                  <button className="btn-secondary btn-sm" onClick={handleRunNoShowCheck}>
-                    <PlayFilled /> Run No-Show Verification
-                  </button>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <button className="btn-secondary btn-sm" onClick={handleRunNoShowCheck}>
+                      <PlayFilled /> Run No-Show Check
+                    </button>
+                    <button className="btn-primary btn-sm" onClick={fetchAllData}>
+                      <ArrowSyncRegular /> Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bookings KPI Overview */}
+                <div className="op-kpi-grid" style={{ marginBottom: 20 }}>
+                  <div className="op-kpi-card glass">
+                    <div className="op-kpi-icon-wrap" style={{ color: '#38bdf8' }}><CalendarRegular /></div>
+                    <span className="op-kpi-label">Total Bookings</span>
+                    <div className="op-kpi-value">{bookings.length}</div>
+                  </div>
+                  <div className="op-kpi-card glass">
+                    <div className="op-kpi-icon-wrap" style={{ color: '#10b981' }}><CheckmarkCircleRegular /></div>
+                    <span className="op-kpi-label">Confirmed (Upcoming)</span>
+                    <div className="op-kpi-value">{bookings.filter((b) => b.status === 'CONFIRMED').length}</div>
+                  </div>
+                  <div className="op-kpi-card glass">
+                    <div className="op-kpi-icon-wrap" style={{ color: '#0ea5e9' }}><LocationRegular /></div>
+                    <span className="op-kpi-label">Arrived at Bay</span>
+                    <div className="op-kpi-value">{bookings.filter((b) => b.status === 'ARRIVED').length}</div>
+                  </div>
+                  <div className="op-kpi-card glass">
+                    <div className="op-kpi-icon-wrap" style={{ color: '#f97316' }}><FlashRegular /></div>
+                    <span className="op-kpi-label">Active Charging</span>
+                    <div className="op-kpi-value">{bookings.filter((b) => b.status === 'CHARGING').length}</div>
+                  </div>
+                </div>
+
+                {/* Filter Controls */}
+                <div className="glass" style={{ padding: 14, borderRadius: 14, marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <input
+                    className="discover__search-input"
+                    style={{ flex: 1, minWidth: 200, padding: '8px 12px' }}
+                    placeholder="Search by driver, vehicle, or booking ref..."
+                    value={bookingSearchQuery}
+                    onChange={(e) => setBookingSearchQuery(e.target.value)}
+                  />
+
+                  <select
+                    value={bookingStatusFilter}
+                    onChange={(e) => setBookingStatusFilter(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', color: 'inherit', border: '1px solid rgba(255,255,255,0.1)' }}
+                  >
+                    <option value="ALL">All Statuses ({bookings.length})</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="ARRIVED">Arrived</option>
+                    <option value="CHARGING">Charging</option>
+                    <option value="QUEUED">Queued</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                    <option value="NO_SHOW">No-Show</option>
+                  </select>
                 </div>
 
                 <div className="op-table-wrap glass">
@@ -959,39 +1029,103 @@ export default function Operator() {
                     <thead>
                       <tr>
                         <th>Booking Ref</th>
-                        <th>Driver</th>
-                        <th>Station</th>
-                        <th>Plug Standard</th>
+                        <th>Driver &amp; Vehicle</th>
+                        <th>Station &amp; Bay</th>
                         <th>Time Window</th>
+                        <th>Estimated</th>
                         <th>Status</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {bookings.map((b) => (
-                        <tr key={b.id}>
-                          <td>
-                            <strong>{b.bookingRef}</strong>
-                          </td>
-                          <td>
-                            <div>{b.userName}</div>
-                            <small style={{ color: 'var(--text-tertiary)' }}>{b.userEmail}</small>
-                          </td>
-                          <td>{b.stationName}</td>
-                          <td>{b.connectorStandard}</td>
-                          <td>
-                            <div>{new Date(b.slotStart).toLocaleTimeString()} - {new Date(b.slotEnd).toLocaleTimeString()}</div>
-                            <small style={{ color: 'var(--text-tertiary)' }}>{new Date(b.slotStart).toLocaleDateString()}</small>
-                          </td>
-                          <td>
-                            <span className={`op-status-badge op-status-badge--${b.status?.toLowerCase()}`}>
-                              {b.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                      {bookings
+                        .filter((b) => {
+                          if (bookingStatusFilter !== 'ALL' && b.status !== bookingStatusFilter) return false;
+                          if (bookingSearchQuery.trim()) {
+                            const q = bookingSearchQuery.toLowerCase();
+                            const matchRef = (b.externalRef || b.bookingRef || '').toLowerCase().includes(q);
+                            const matchDriver = (b.driverName || b.userName || '').toLowerCase().includes(q);
+                            const matchVeh = (b.vehicleName || '').toLowerCase().includes(q);
+                            return matchRef || matchDriver || matchVeh;
+                          }
+                          return true;
+                        })
+                        .map((b) => (
+                          <tr key={b.id}>
+                            <td>
+                              <strong style={{ fontFamily: 'var(--font-mono, monospace)', color: '#38bdf8' }}>{b.externalRef || b.bookingRef}</strong>
+                              {b.bookingType === 'EMERGENCY' && (
+                                <span style={{ display: 'block', fontSize: '0.68rem', color: '#ef4444', fontWeight: 800 }}>
+                                  EMERGENCY
+                                </span>
+                              )}
+                            </td>
+                            <td>
+                              <div>{b.driverName || b.userName}</div>
+                              <small style={{ color: 'var(--text-tertiary)' }}>{b.vehicleName} • {b.driverEmail || b.userEmail}</small>
+                            </td>
+                            <td>
+                              <div>{b.stationName}</div>
+                              <small style={{ color: 'var(--text-tertiary)' }}>{b.connectorStandard} ({b.connectorPowerKw || 60} kW)</small>
+                            </td>
+                            <td>
+                              <div>{new Date(b.slotStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(b.slotEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                              <small style={{ color: 'var(--text-tertiary)' }}>{new Date(b.slotStart).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</small>
+                            </td>
+                            <td>
+                              <strong style={{ color: '#10b981' }}>₹{Number(b.totalCost || 0).toFixed(2)}</strong>
+                            </td>
+                            <td>
+                              <span className={`op-status-badge op-status-badge--${b.status?.toLowerCase()}`}>
+                                {b.status}
+                              </span>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                                {b.status === 'CONFIRMED' && (
+                                  <button
+                                    className="btn-primary btn-xs"
+                                    onClick={() => handleUpdateBookingStatus(b.id, 'ARRIVED')}
+                                    title="Verify driver arrival at bay"
+                                  >
+                                    <CheckmarkCircleRegular /> Mark Arrived
+                                  </button>
+                                )}
+                                {b.status === 'ARRIVED' && (
+                                  <button
+                                    className="btn-primary btn-xs"
+                                    onClick={() => handleUpdateBookingStatus(b.id, 'CHARGING')}
+                                    title="Start charging"
+                                  >
+                                    <FlashRegular /> Start Charge
+                                  </button>
+                                )}
+                                {['CONFIRMED', 'ARRIVED'].includes(b.status) && (
+                                  <button
+                                    className="btn-secondary btn-xs"
+                                    style={{ color: '#f87171' }}
+                                    onClick={() => handleUpdateBookingStatus(b.id, 'NO_SHOW')}
+                                    title="Release bay if driver did not arrive"
+                                  >
+                                    No-Show
+                                  </button>
+                                )}
+                                {['CONFIRMED', 'QUEUED'].includes(b.status) && (
+                                  <button
+                                    className="btn-secondary btn-xs"
+                                    onClick={() => handleUpdateBookingStatus(b.id, 'CANCELLED')}
+                                    title="Cancel booking and release slot"
+                                  >
+                                    Cancel
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
                       {bookings.length === 0 && (
                         <tr>
-                          <td colSpan={6} style={{ textAlign: 'center', padding: 32, color: 'var(--text-tertiary)' }}>
+                          <td colSpan={7} style={{ textAlign: 'center', padding: 32, color: 'var(--text-tertiary)' }}>
                             No bookings recorded yet. New driver reservations will appear here in real time.
                           </td>
                         </tr>

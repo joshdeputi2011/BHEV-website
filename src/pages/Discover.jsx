@@ -19,6 +19,7 @@ import {
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import MapplsStationMap from '../components/MapplsStationMap';
+import BookingModal from '../components/BookingModal';
 import './Discover.css';
 
 const api = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
@@ -100,6 +101,8 @@ export default function Discover() {
   const [fitTrigger, setFitTrigger] = useState(0);
   const [bookingBusy, setBookingBusy] = useState('');
   const [bookingResult, setBookingResult] = useState(null);
+  const [bookingStation, setBookingStation] = useState(null);
+  const [bookingConnectorId, setBookingConnectorId] = useState(null);
   const [evStatus, setEvStatus] = useState(null);
   const [evBusy, setEvBusy] = useState(false);
 
@@ -941,11 +944,21 @@ export default function Discover() {
                         className="btn-primary btn-sm"
                         onClick={(e) => {
                           e.stopPropagation();
+                          setBookingConnectorId(connector?.id);
+                          setBookingStation(station);
+                        }}
+                      >
+                        <CalendarRegular /> Book Slot
+                      </button>
+                      <button
+                        className="btn-secondary btn-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleStartCharging(station, connector);
                         }}
                         disabled={bookingBusy === `${actionKey}-charging`}
                       >
-                        <FlashRegular /> {bookingBusy === `${actionKey}-charging` ? 'Connecting…' : 'Start Charging'}
+                        <FlashRegular /> {bookingBusy === `${actionKey}-charging` ? 'Connecting…' : 'Quick Start'}
                       </button>
                       <button
                         className="btn-secondary btn-sm"
@@ -957,39 +970,6 @@ export default function Discover() {
                         <NavigationRegular /> Route
                       </button>
                     </footer>
-
-                    <div className="discover__booking-actions">
-                      <button
-                        className="btn-secondary btn-xs"
-                        disabled={!connector || bookingBusy === `${actionKey}-STANDARD`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          bookStation(station, 'STANDARD');
-                        }}
-                      >
-                        <CalendarRegular /> {bookingBusy === `${actionKey}-STANDARD` ? 'Booking...' : 'Reserve'}
-                      </button>
-                      <button
-                        className="btn-secondary btn-xs"
-                        disabled={!connector || bookingBusy === `${actionKey}-QUEUE`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          bookStation(station, 'QUEUE');
-                        }}
-                      >
-                        <PeopleRegular /> Queue
-                      </button>
-                      <button
-                        className="btn-secondary btn-xs discover__emergency-btn"
-                        disabled={!connector || bookingBusy === `${actionKey}-EMERGENCY`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          bookStation(station, 'EMERGENCY');
-                        }}
-                      >
-                        <AlertUrgentRegular /> Emergency
-                      </button>
-                    </div>
                   </article>
                 );
               })}
@@ -1003,6 +983,17 @@ export default function Discover() {
           )}
         </aside>
       </section>
+
+      {/* ── Interactive Slot Booking Modal ── */}
+      {bookingStation && (
+        <BookingModal
+          station={bookingStation}
+          isOpen={!!bookingStation}
+          onClose={() => setBookingStation(null)}
+          preselectedConnectorId={bookingConnectorId}
+          onBookingSuccess={() => loadData()}
+        />
+      )}
     </main>
   );
 }

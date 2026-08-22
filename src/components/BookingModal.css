@@ -1,0 +1,859 @@
+/* ═══════════════════════════════════════════════════
+   URJAA — Interactive Slot Booking Modal Styles
+   ═══════════════════════════════════════════════════ */
+
+.booking-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(4, 7, 12, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.booking-modal-card {
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 24px;
+  padding: 28px;
+  position: relative;
+  background: rgba(13, 17, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(16, 185, 129, 0.15);
+  color: #f8fafc;
+}
+
+[data-theme="gov"] .booking-modal-card {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(230, 81, 0, 0.15);
+  box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(230, 81, 0, 0.1);
+  color: #0f172a;
+}
+
+/* ── Header ── */
+.booking-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.booking-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  margin-bottom: 8px;
+}
+
+[data-theme="gov"] .booking-modal-badge {
+  background: rgba(230, 81, 0, 0.1);
+  color: #e65100;
+  border-color: rgba(230, 81, 0, 0.25);
+}
+
+.booking-modal-header h2 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0;
+  color: inherit;
+  line-height: 1.25;
+}
+
+.booking-modal-station-addr {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+}
+
+.booking-modal-close {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booking-modal-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ── Step Progress Bar ── */
+.booking-step-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 24px;
+}
+
+[data-theme="gov"] .booking-step-bar {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.booking-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.booking-step-item span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-tertiary);
+}
+
+.booking-step-item--active {
+  color: #10b981;
+}
+
+[data-theme="gov"] .booking-step-item--active {
+  color: #e65100;
+}
+
+.booking-step-item--active span {
+  background: #10b981;
+  color: #090a0f;
+}
+
+[data-theme="gov"] .booking-step-item--active span {
+  background: #e65100;
+  color: #ffffff;
+}
+
+.booking-step-item--done {
+  color: var(--text-secondary);
+}
+
+.booking-step-item--done span {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.booking-step-divider {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="gov"] .booking-step-divider {
+  background: #cbd5e1;
+}
+
+/* ── Error Banner ── */
+.booking-modal-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}
+
+/* ── Sections & Labels ── */
+.booking-section {
+  margin-bottom: 22px;
+}
+
+.booking-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.booking-label-sub {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+/* ── Connector Grid ── */
+.booking-connector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.booking-conn-card {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: inherit;
+}
+
+.booking-conn-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+.booking-conn-card--active {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="gov"] .booking-conn-card--active {
+  background: rgba(230, 81, 0, 0.08) !important;
+  border-color: #e65100 !important;
+  box-shadow: 0 0 16px rgba(230, 81, 0, 0.15);
+}
+
+.booking-conn-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.booking-conn-standard {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+[data-theme="gov"] .booking-conn-standard {
+  color: #0f172a;
+}
+
+.booking-conn-type {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.booking-conn-type--dc {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+}
+
+.booking-conn-type--ac {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+}
+
+.booking-conn-power {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.booking-conn-tariff {
+  font-size: 0.74rem;
+  color: var(--text-tertiary);
+}
+
+/* ── Date Chips ── */
+.booking-date-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.booking-date-chip {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: inherit;
+}
+
+.booking-date-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.booking-date-chip--active {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+}
+
+[data-theme="gov"] .booking-date-chip--active {
+  background: rgba(230, 81, 0, 0.12) !important;
+  border-color: #e65100 !important;
+  color: #e65100 !important;
+}
+
+.booking-date-day {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.booking-date-val {
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+/* ── Filter Pills & Segment ── */
+.booking-filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.booking-duration-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.booking-pill-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booking-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.booking-pill-btn--active {
+  background: #10b981 !important;
+  color: #090a0f !important;
+  border-color: #10b981 !important;
+  font-weight: 800;
+}
+
+[data-theme="gov"] .booking-pill-btn--active {
+  background: #e65100 !important;
+  color: #ffffff !important;
+  border-color: #e65100 !important;
+}
+
+/* ── Slot Grid & Legend ── */
+.booking-legend {
+  display: flex;
+  gap: 12px;
+  font-size: 0.74rem;
+  color: var(--text-tertiary);
+}
+
+.booking-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot--available {
+  background: #10b981;
+}
+
+.dot--booked {
+  background: #ef4444;
+}
+
+.dot--past {
+  background: #64748b;
+}
+
+.booking-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.booking-slot-card {
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: inherit;
+}
+
+.booking-slot-card--available:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: #10b981;
+  transform: scale(1.02);
+}
+
+.booking-slot-card--selected {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+  color: #090a0f !important;
+  font-weight: 800;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+}
+
+[data-theme="gov"] .booking-slot-card--selected {
+  background: #e65100 !important;
+  border-color: #e65100 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(230, 81, 0, 0.35);
+}
+
+.booking-slot-card--booked {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.booking-slot-card--past {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.booking-slot-time {
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.booking-slot-status-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  margin-top: 2px;
+  color: var(--text-tertiary);
+}
+
+.booking-slot-card--selected .booking-slot-status-label {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="gov"] .booking-slot-card--selected .booking-slot-status-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.booking-slots-loading,
+.booking-slots-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.86rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.booking-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(16, 185, 129, 0.2);
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Selected Window Bottom Bar ── */
+.booking-selected-summary {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="gov"] .booking-selected-summary {
+  background: rgba(230, 81, 0, 0.06);
+  border-color: rgba(230, 81, 0, 0.2);
+}
+
+/* ── EV Presets & Battery Sliders ── */
+.booking-ev-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.booking-ev-card {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.booking-ev-card strong {
+  font-size: 0.88rem;
+}
+
+.booking-ev-card span {
+  font-size: 0.74rem;
+  color: var(--text-tertiary);
+}
+
+.booking-ev-card--active {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: #10b981 !important;
+}
+
+[data-theme="gov"] .booking-ev-card--active {
+  background: rgba(230, 81, 0, 0.08) !important;
+  border-color: #e65100 !important;
+}
+
+.booking-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: inherit;
+  font-size: 0.88rem;
+}
+
+.booking-soc-sliders {
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.booking-soc-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  margin-bottom: 6px;
+}
+
+.booking-range-slider {
+  width: 100%;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+.booking-range-slider--green {
+  accent-color: #10b981;
+}
+
+.booking-calc-result {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.booking-calc-pill {
+  text-align: center;
+}
+
+.booking-calc-pill span {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.booking-calc-pill strong {
+  font-size: 1.05rem;
+  color: #f8fafc;
+}
+
+[data-theme="gov"] .booking-calc-pill strong {
+  color: #0f172a;
+}
+
+/* ── Bill Summary Grid ── */
+.booking-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 640px) {
+  .booking-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.booking-recap-card,
+.booking-bill-card {
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.booking-recap-row,
+.booking-bill-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.booking-recap-row strong,
+.booking-bill-row span:last-child {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+[data-theme="gov"] .booking-recap-row strong,
+[data-theme="gov"] .booking-bill-row span:last-child {
+  color: #0f172a;
+}
+
+.booking-bill-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 12px 0;
+}
+
+.booking-bill-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.booking-guarantee-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  font-size: 0.76rem;
+  color: #34d399;
+}
+
+.booking-emergency-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  cursor: pointer;
+}
+
+.booking-emergency-toggle input {
+  margin-top: 3px;
+  accent-color: #ef4444;
+}
+
+.booking-emergency-toggle strong {
+  font-size: 0.82rem;
+  color: #f87171;
+  display: block;
+}
+
+.booking-emergency-toggle p {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  margin: 2px 0 0;
+}
+
+/* ── Modal Actions ── */
+.booking-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* ── Digital Ticket Pass (Step 4) ── */
+.booking-ticket-step {
+  padding: 10px 0;
+}
+
+.booking-ticket-card {
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.booking-ticket-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.14);
+  margin-bottom: 20px;
+}
+
+.booking-ticket-success-icon {
+  font-size: 2.4rem;
+  color: #10b981;
+}
+
+.booking-ticket-ref {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono, monospace);
+}
+
+.booking-ticket-ref strong {
+  color: #38bdf8;
+}
+
+.booking-ticket-body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .booking-ticket-body {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.booking-ticket-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.booking-ticket-qr-canvas {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.booking-ticket-qr-wrap small {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  max-width: 160px;
+  text-align: center;
+}
+
+.booking-ticket-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.booking-ticket-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+}
+
+.booking-ticket-info-row span {
+  color: var(--text-tertiary);
+}
+
+.booking-ticket-info-row strong {
+  color: #f8fafc;
+}
+
+[data-theme="gov"] .booking-ticket-info-row strong {
+  color: #0f172a;
+}
+
+.booking-ticket-footer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.14);
+}

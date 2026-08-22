@@ -10,7 +10,7 @@ import './AuthGate.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-export default function AuthGate({ children }) {
+export default function AuthGate({ children, requiredRoles = ['admin'], title = 'Admin Login' }) {
   const [token, setToken] = useState(() => sessionStorage.getItem('uei_admin_token'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +23,7 @@ export default function AuthGate({ children }) {
     setError('');
 
     try {
-      const res = await fetch(`${API_URL}/auth/email/login`, {
+      const res = await fetch(`${API_URL}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,8 +39,8 @@ export default function AuthGate({ children }) {
         throw new Error(data.error || 'Login failed');
       }
 
-      if (data.user?.role !== 'admin') {
-        throw new Error('Admin access required');
+      if (!requiredRoles.includes(data.user?.role)) {
+        throw new Error(`${requiredRoles.join(' or ')} access required`);
       }
 
       sessionStorage.setItem('uei_admin_token', data.token);
@@ -76,7 +76,7 @@ export default function AuthGate({ children }) {
           <FlashRegular />
         </div>
 
-        <h2 className="auth-gate__title">Admin Login</h2>
+        <h2 className="auth-gate__title">{title}</h2>
         <p className="auth-gate__subtitle">
           Sign in with your admin credentials to access the dashboard.
         </p>

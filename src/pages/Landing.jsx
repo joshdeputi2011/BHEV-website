@@ -17,6 +17,7 @@ import GlassCard from '../components/GlassCard';
 import GlowBlob from '../components/GlowBlob';
 import '../components/GlassCard.css';
 import './Landing.css';
+import heroImage from '../assets/chargegrid-network-hero.png';
 
 const features = [
   {
@@ -63,6 +64,7 @@ export default function Landing() {
     <div className="landing">
       {/* ── Hero ── */}
       <section className="landing__hero">
+        <img className="landing__hero-image" src={heroImage} alt="Electric vehicle charging network at dusk" />
         <GlowBlob color="green" size={280} top="-100px" left="-80px" />
         <GlowBlob color="blue" size={320} bottom="-120px" right="-60px" delay={2} />
         <GlowBlob color="cyan" size={160} top="40%" left="60%" delay={4} />
@@ -93,7 +95,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
           >
-            UEI connects Charge Point Operators, EV drivers, and app developers
+            CHARGEGRID connects Charge Point Operators, EV drivers, and app developers
             through a single interoperable framework — making EV charging as
             seamless as UPI made payments.
           </motion.p>
@@ -107,8 +109,8 @@ export default function Landing() {
             <Link to="/docs" className="btn-primary">
               <DocumentRegular /> API Documentation
             </Link>
-            <Link to="/admin" className="btn-secondary">
-              Admin Dashboard <ArrowRightRegular />
+            <Link to="/discover" className="btn-secondary">
+              Explore stations <ArrowRightRegular />
             </Link>
           </motion.div>
 

@@ -25,8 +25,9 @@ export default function Navbar() {
 
   const links = [
     { to: '/', label: 'Home' },
+    { to: '/discover', label: 'Discover' },
     { to: '/docs', label: 'API Docs' },
-    { to: '/admin', label: 'Admin' },
+    { to: '/operator', label: 'Operator' },
   ];
 
   return (
@@ -36,7 +37,7 @@ export default function Navbar() {
           <div className="navbar__logo-icon">
             <FlashRegular />
           </div>
-          <span className="navbar__logo-text">UEI</span>
+          <span className="navbar__logo-text">CHARGEGRID</span>
         </Link>
 
         <div className="navbar__links">

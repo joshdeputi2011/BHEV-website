@@ -12,6 +12,7 @@
   "dependencies": {
     "@fluentui/react-icons": "^2.0.338",
     "framer-motion": "^13.1.1",
+    "mappls-web-maps": "^3.8.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"

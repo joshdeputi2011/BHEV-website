@@ -1,0 +1,3 @@
+.mappls-map { min-height: 520px; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #071318; border: 1px solid var(--border-medium); }
+.mappls-map--notice { display: grid; place-items: center; padding: 32px; color: var(--text-secondary); text-align: center; }
+.mappls-map code { color: var(--accent); margin: 0 4px; }

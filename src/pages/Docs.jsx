@@ -14,7 +14,6 @@ import {
   FlashRegular,
 } from '@fluentui/react-icons';
 import MethodBadge from '../components/MethodBadge';
-import GlassCard from '../components/GlassCard';
 import GlowBlob from '../components/GlowBlob';
 import apiEndpoints from '../data/apiEndpoints';
 import '../components/GlassCard.css';
@@ -66,12 +65,12 @@ export default function Docs() {
           >
             <div className="docs__header-badge">
               <CodeRegular />
-              <span>API Reference v0.1.0</span>
+              <span>API Reference v1</span>
             </div>
-            <h1>UEI API <span className="gradient-text">Documentation</span></h1>
+            <h1>CHARGEGRID API <span className="gradient-text">Documentation</span></h1>
             <p>
-              Complete reference for integrating with the Unified EV Infrastructure framework.
-              Authenticate, discover stations, manage bookings, and track charging sessions.
+              Integrate once with a CPO-neutral, normalized EV charging data platform.
+              Internal governance endpoints are intentionally not public documentation.
             </p>
 
             {/* Base URL */}

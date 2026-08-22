@@ -5,10 +5,7 @@ import {
   FlashRegular,
   LocationRegular,
   ArrowResetRegular,
-  GlobeRegular,
-  VehicleCarRegular,
-  WeatherSunnyRegular,
-  WeatherMoonRegular
+  GlobeRegular
 } from '@fluentui/react-icons';
 import MapplsStationMap from '../components/MapplsStationMap';
 import './Discover.css';
@@ -33,6 +30,35 @@ function haversineKm(lat1, lon1, lat2, lon2) {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
+// Synonyms and aliases for Indian cities and operators to ensure 100% search accuracy
+const ALIASES = {
+  bangalore: ['bengaluru', 'karnataka'],
+  bengaluru: ['bangalore', 'karnataka'],
+  gurgaon: ['gurugram', 'haryana'],
+  gurugram: ['gurgaon', 'haryana'],
+  bombay: ['mumbai', 'maharashtra'],
+  mumbai: ['bombay', 'maharashtra'],
+  calcutta: ['kolkata', 'west bengal'],
+  kolkata: ['calcutta', 'west bengal'],
+  madras: ['chennai', 'tamil nadu'],
+  chennai: ['madras', 'tamil nadu'],
+  pondicherry: ['puducherry'],
+  puducherry: ['pondicherry'],
+  tata: ['tata power', 'tp'],
+  iocl: ['indian oil', 'indian oil corporation'],
+  bpcl: ['bharat petroleum'],
+  hpcl: ['hindustan petroleum'],
+  ather: ['ather energy', 'ather grid']
+};
+
+function normalizeText(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export default function Discover() {
   const [allStations, setAllStations] = useState([]);
   const [meta, setMeta] = useState({
@@ -47,6 +73,7 @@ export default function Discover() {
 
   // Filter states
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const [selectedConnector, setSelectedConnector] = useState('');
   const [selectedPower, setSelectedPower] = useState('0');
@@ -59,7 +86,15 @@ export default function Discover() {
   const [selectedStation, setSelectedStation] = useState(null);
   const [fitTrigger, setFitTrigger] = useState(0);
 
-  // 1. Auto-detect user's location on initial mount
+  // Debounce search query to keep typing ultra-fluid
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 120);
+    return () => clearTimeout(handler);
+  }, [query]);
+
+  // 1. Auto-detect user's location on initial mount silently
   useEffect(() => {
     if (!navigator.geolocation) return;
 
@@ -72,7 +107,7 @@ export default function Discover() {
       },
       (err) => {
         setLocating(false);
-        console.info('Automatic location detection skipped or waiting for manual prompt:', err.message);
+        console.info('Auto-location check completed:', err.message);
       },
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
@@ -87,39 +122,57 @@ export default function Discover() {
       setError('');
 
       try {
-        // Try local static BEE dataset first for instant 29k station load
         const basePath = import.meta.env.BASE_URL || '/';
         const staticJsonUrl = `${basePath}data/bee-stations.json`.replace(/\/+/g, '/');
         const staticMetaUrl = `${basePath}data/source-meta.json`.replace(/\/+/g, '/');
 
-        let stationsData = null;
-        let metaData = null;
+        let staticList = [];
+        let liveList = [];
 
+        // 1. Fetch static BEE dataset
         try {
           const res = await fetch(staticJsonUrl);
           if (res.ok) {
             const data = await res.json();
-            stationsData = data.stations || data;
+            staticList = data.stations || data || [];
             metaData = data.meta;
           }
         } catch (e) {
-          console.warn('Local static JSON fetch failed, trying API fallback', e);
+          console.warn('Static JSON fetch fallback:', e);
         }
 
-        // If local static json was not available, try API
-        if (!stationsData) {
-          try {
-            const res = await fetch(`${api}/api/v1/stations?limit=100`);
-            if (res.ok) {
-              const payload = await res.json();
-              stationsData = payload.data || [];
-            }
-          } catch (e) {
-            console.warn('API fetch failed', e);
+        // 2. Fetch live operator stations from backend database
+        try {
+          const resLive = await fetch(`${api}/api/v1/stations?limit=100`);
+          if (resLive.ok) {
+            const payload = await resLive.json();
+            liveList = payload.data || [];
           }
+        } catch (e) {
+          console.warn('Backend live stations fetch skipped/offline:', e);
         }
 
-        // Try to fetch meta if not yet loaded
+        // 3. Read custom local operator stations (instant multi-tab sync)
+        let localCustom = [];
+        try {
+          const stored = localStorage.getItem('bhev_custom_stations');
+          if (stored) localCustom = JSON.parse(stored);
+        } catch (e) {
+          // ignore
+        }
+
+        // Merge: Live backend + Local Custom at the very top, followed by 29k national stations
+        const combinedRaw = [...localCustom, ...liveList, ...staticList];
+        
+        // Deduplicate by ID
+        const seenIds = new Set();
+        stationsData = combinedRaw.filter((s) => {
+          if (!s || !s.id) return false;
+          if (seenIds.has(s.id)) return false;
+          seenIds.add(s.id);
+          return true;
+        });
+
         if (!metaData) {
           try {
             const resMeta = await fetch(staticMetaUrl);
@@ -134,7 +187,6 @@ export default function Discover() {
         if (cancelled) return;
 
         if (stationsData && stationsData.length > 0) {
-          // Precompute search string for instantaneous lookup
           const processed = stationsData.map((s) => {
             const connectors = Array.isArray(s.connectors)
               ? s.connectors.map((c) => c.standard || c)
@@ -144,25 +196,53 @@ export default function Discover() {
                   ? s.connector_categories
                   : [];
 
+            const cpo = s.cpo || s.operator?.name || '';
+            const location = s.location || s.address || '';
+            const city = s.city || '';
+            const district = s.district || '';
+            const state = s.state || '';
+            const ownership = s.ownership || '';
+            const pincode = s.pincode || s.postal_code || '';
+
+            // Normalized token array for sub-millisecond multi-attribute matching
+            const searchTokens = [
+              s.name,
+              cpo,
+              location,
+              city,
+              district,
+              state,
+              ownership,
+              pincode,
+              ...connectors
+            ]
+              .map(normalizeText)
+              .filter(Boolean);
+
+            // Add city/operator aliases
+            const cityNorm = normalizeText(city);
+            if (ALIASES[cityNorm]) {
+              searchTokens.push(...ALIASES[cityNorm]);
+            }
+            const cpoNorm = normalizeText(cpo);
+            if (ALIASES[cpoNorm]) {
+              searchTokens.push(...ALIASES[cpoNorm]);
+            }
+
+            const searchIndex = searchTokens.join(' ');
+
             return {
               ...s,
               latitude: Number(s.latitude),
               longitude: Number(s.longitude),
               maxPowerKw: Number(s.maxPowerKw || s.max_power_kw || 0),
               connectorsList: connectors,
-              _search: [
-                s.name,
-                s.cpo || s.operator?.name,
-                s.location || s.address,
-                s.city,
-                s.district,
-                s.state,
-                s.ownership,
-                ...connectors
-              ]
-                .filter(Boolean)
-                .join(' ')
-                .toLowerCase()
+              nameNorm: normalizeText(s.name),
+              cityNorm: normalizeText(city),
+              districtNorm: normalizeText(district),
+              cpoNorm: normalizeText(cpo),
+              stateNorm: normalizeText(state),
+              _search: searchIndex
             };
           });
 
@@ -171,7 +251,6 @@ export default function Discover() {
           if (metaData) {
             setMeta(metaData);
           } else {
-            // Compute fallback metadata
             const states = [...new Set(processed.map((s) => s.state).filter(Boolean))].sort();
             const connCats = [
               ...new Set(
@@ -203,12 +282,20 @@ export default function Discover() {
     };
   }, []);
 
-  // Filter logic
+  // Filter and Relevance Ranking Logic
   const filteredStations = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const queryWords = q ? q.split(/\s+/).filter(Boolean) : [];
+    const rawQuery = normalizeText(debouncedQuery);
+    const queryWords = rawQuery ? rawQuery.split(' ').filter(Boolean) : [];
     const minPower = Number(selectedPower);
     const rad = Number(selectedRadius);
+
+    // Expand search keywords with aliases
+    const expandedWords = [...queryWords];
+    for (const w of queryWords) {
+      if (ALIASES[w]) {
+        expandedWords.push(...ALIASES[w]);
+      }
+    }
 
     return allStations
       .map((s) => {
@@ -216,29 +303,78 @@ export default function Discover() {
         if (userLocation) {
           dist = haversineKm(userLocation.lat, userLocation.lng, s.latitude, s.longitude);
         }
-        return { ...s, _distance: dist };
+
+        // Calculate relevance score when user is searching
+        let relevance = 0;
+        if (queryWords.length > 0) {
+          // Exact match in station name
+          if (s.nameNorm.includes(rawQuery)) relevance += 100;
+          // Exact match in city or district
+          if (s.cityNorm.includes(rawQuery) || s.districtNorm.includes(rawQuery)) relevance += 80;
+          // Exact match in CPO operator
+          if (s.cpoNorm.includes(rawQuery)) relevance += 60;
+          // State match
+          if (s.stateNorm.includes(rawQuery)) relevance += 40;
+
+          // Individual word hits
+          for (const w of queryWords) {
+            if (s.nameNorm.includes(w)) relevance += 25;
+            if (s.cityNorm.includes(w) || s.districtNorm.includes(w)) relevance += 20;
+            if (s.cpoNorm.includes(w)) relevance += 15;
+            if (s._search.includes(w)) relevance += 10;
+          }
+        }
+
+        return { ...s, _distance: dist, _relevance: relevance };
       })
       .filter((s) => {
-        // Multi-word keyword matching
+        // Multi-word search matching: all entered words must be present
         if (queryWords.length > 0) {
-          const matchAll = queryWords.every((word) => s._search.includes(word));
+          const matchAll = queryWords.every((word) => {
+            if (s._search.includes(word)) return true;
+            // Check if any alias of the word matches
+            if (ALIASES[word] && ALIASES[word].some((alias) => s._search.includes(alias))) {
+              return true;
+            }
+            return false;
+          });
           if (!matchAll) return false;
         }
+
+        // State filter
         if (selectedState && s.state !== selectedState) return false;
+
+        // Connector filter
         if (
           selectedConnector &&
           !s.connectorsList.some((c) =>
             String(c).toLowerCase().includes(selectedConnector.toLowerCase())
           )
-        )
+        ) {
           return false;
+        }
+
+        // Ownership filter
         if (selectedOwnership && s.ownership !== selectedOwnership) return false;
+
+        // Minimum Power filter
         if (minPower > 0 && s.maxPowerKw < minPower) return false;
-        // Radius filter only restricts if explicitly enabled (> 0)
-        if (userLocation && rad > 0 && s._distance != null && s._distance > rad) return false;
+
+        // Distance radius filter only applies if selectedRadius > 0
+        if (userLocation && rad > 0 && s._distance != null && s._distance > rad) {
+          return false;
+        }
+
         return true;
       })
       .sort((a, b) => {
+        // 1. If searching, prioritize relevance score first
+        if (queryWords.length > 0) {
+          if (b._relevance !== a._relevance) {
+            return b._relevance - a._relevance;
+          }
+        }
+        // 2. Secondary sort by distance if user location is available
         if (userLocation && a._distance != null && b._distance != null) {
           return a._distance - b._distance;
         }
@@ -246,7 +382,7 @@ export default function Discover() {
       });
   }, [
     allStations,
-    query,
+    debouncedQuery,
     selectedState,
     selectedConnector,
     selectedPower,
@@ -281,6 +417,7 @@ export default function Discover() {
   // Reset Filters
   const handleReset = useCallback(() => {
     setQuery('');
+    setDebouncedQuery('');
     setSelectedState('');
     setSelectedConnector('');
     setSelectedPower('0');
@@ -349,12 +486,18 @@ export default function Discover() {
               <SearchRegular className="discover__search-icon" />
               <input
                 className="discover__search-input"
-                placeholder="Search city, station name, CPO, district, address (e.g. Tata Power, Mumbai, Ather)..."
+                placeholder="Search city, station name, CPO, district, address (e.g. Tata Power, Bengaluru, Mumbai, IOCL)..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
               {query && (
-                <button className="discover__search-clear" onClick={() => setQuery('')}>
+                <button
+                  className="discover__search-clear"
+                  onClick={() => {
+                    setQuery('');
+                    setDebouncedQuery('');
+                  }}
+                >
                   ✕
                 </button>
               )}
@@ -471,7 +614,7 @@ export default function Discover() {
             </div>
             <div className="discover__stat-pill discover__stat-pill--highlight">
               <strong>{fmt(filteredStations.length)}</strong>
-              <span>{userLocation ? 'Nearby Visible' : 'Matches Visible'}</span>
+              <span>{debouncedQuery || selectedState ? 'Matches Found' : userLocation ? 'Nearby Visible' : 'Visible'}</span>
             </div>
           </div>
         </div>
@@ -495,9 +638,9 @@ export default function Discover() {
           <header className="discover__list-header">
             <div>
               <span className="discover__list-count">
-                {loading ? 'Loading…' : `${fmt(filteredStations.length)} STATIONS FOUND`}
+                {loading ? 'Loading…' : `${fmt(filteredStations.length)} STATIONS MATCHED`}
               </span>
-              <h2>{userLocation ? 'Nearest Stations to You' : 'Charging Points'}</h2>
+              <h2>{debouncedQuery ? `Results for "${debouncedQuery}"` : userLocation ? 'Nearest Stations to You' : 'Charging Points'}</h2>
             </div>
             <button className="btn-secondary btn-sm" onClick={() => setFitTrigger((t) => t + 1)}>
               Fit Map
@@ -515,7 +658,7 @@ export default function Discover() {
 
           {!loading && !error && filteredStations.length === 0 && (
             <div className="discover__empty-state">
-              <p>No charging stations match your current filter criteria.</p>
+              <p>No charging stations matched &ldquo;{query}&rdquo; with current filters.</p>
               <button className="btn-secondary btn-sm" onClick={handleReset}>
                 Reset Filters
               </button>
@@ -600,7 +743,7 @@ export default function Discover() {
 
               {filteredStations.length > 150 && (
                 <div className="discover__list-footer-note">
-                  Showing top 150 of {fmt(filteredStations.length)} stations. Use search or filters to narrow down your area.
+                  Showing top 150 of {fmt(filteredStations.length)} matched stations. Use search or filters to narrow down your area.
                 </div>
               )}
             </div>

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   Mappls & Leaflet Discovery Map Styling — Dual Theme
+   Mappls & Leaflet Discovery Map Styling — Dual Theme & Layer Controls
    ═══════════════════════════════════════════════════ */
 
 .bhev-map-container {
@@ -30,6 +30,140 @@
 
 [data-theme="gov"] .bhev-leaflet-map {
   background: #E2E8F0;
+}
+
+/* ── Top Layer & Landmark Controls Bar ── */
+.bhev-map-layer-controls {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 500;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.bhev-map-layers-switch {
+  display: flex;
+  background: rgba(10, 20, 16, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 3px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  gap: 2px;
+}
+
+[data-theme="gov"] .bhev-map-layers-switch {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.bhev-layer-btn {
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  padding: 5px 9px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme="gov"] .bhev-layer-btn {
+  color: #64748B;
+}
+
+.bhev-layer-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="gov"] .bhev-layer-btn:hover {
+  color: #0F172A;
+  background: #F1F5F9;
+}
+
+.bhev-layer-btn--active {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+}
+
+[data-theme="gov"] .bhev-layer-btn--active {
+  background: linear-gradient(135deg, #E65100, #C2410C) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(230, 81, 0, 0.25);
+}
+
+.bhev-corridor-btn,
+.bhev-recenter-btn {
+  background: rgba(10, 20, 16, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 6px 11px;
+  font-size: 0.73rem;
+  font-weight: 750;
+  color: #cbd5e1;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme="gov"] .bhev-corridor-btn,
+[data-theme="gov"] .bhev-recenter-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.bhev-corridor-btn:hover,
+.bhev-recenter-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.bhev-corridor-btn--active {
+  background: rgba(56, 189, 248, 0.2) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="gov"] .bhev-corridor-btn--active {
+  background: #E0F2FE !important;
+  border-color: #0284C7 !important;
+  color: #0284C7 !important;
+}
+
+/* ── Corridor Landmark Badge on Map ── */
+.corridor-badge {
+  background: rgba(15, 23, 42, 0.85);
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+[data-theme="gov"] .corridor-badge {
+  background: #FFFFFF;
+  color: #0369A1;
+  border: 1px solid #0284C7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Map Source / Notice Badge */
@@ -429,7 +563,19 @@
 
 @media (max-width: 900px) {
   .bhev-map-container {
-    height: 440px;
-    min-height: 380px;
+    height: 460px;
+    min-height: 400px;
+  }
+
+  .bhev-map-layer-controls {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    justify-content: space-between;
+  }
+
+  .bhev-layer-btn {
+    padding: 4px 6px;
+    font-size: 0.68rem;
   }
 }

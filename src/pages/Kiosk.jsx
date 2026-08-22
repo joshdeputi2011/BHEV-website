@@ -16,7 +16,13 @@ import {
   MoneyRegular,
   BuildingRegular,
   CheckmarkCircleRegular,
+  ShieldCheckmarkRegular,
+  KeyRegular,
+  GaugeRegular,
+  HeartPulseRegular,
+  WeatherSunnyRegular,
 } from '@fluentui/react-icons';
+import { useAuth } from '../context/AuthContext';
 import './Kiosk.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
@@ -68,6 +74,7 @@ function drawKioskQR(canvas, text, size = 200) {
 
 export default function Kiosk() {
   const { stationId: routeStationId } = useParams();
+  const { token, user, isAuthenticated } = useAuth();
   const [stationList, setStationList] = useState([]);
   const [selectedStationId, setSelectedStationId] = useState(routeStationId || null);
   const [kioskState, setKioskState] = useState(null);
@@ -75,13 +82,16 @@ export default function Kiosk() {
   const [error, setError] = useState('');
   const qrCanvasRef = useRef(null);
 
-  // Kiosk hardware simulation controls
+  // Kiosk hardware simulation metrics
   const [cablePlugged, setCablePlugged] = useState(false);
   const [simStreaming, setSimStreaming] = useState(false);
-  const [livePowerKw, setLivePowerKw] = useState(50);
+  const [livePowerKw, setLivePowerKw] = useState(58.5);
   const [liveVoltage, setLiveVoltage] = useState(400);
-  const [liveCurrent, setLiveCurrent] = useState(125);
-  const [liveSoc, setLiveSoc] = useState(35);
+  const [liveCurrent, setLiveCurrent] = useState(146);
+  const [liveSoc, setLiveSoc] = useState(38);
+  const [batteryTemp, setBatteryTemp] = useState(32.4);
+  const [chargerTemp, setChargerTemp] = useState(38.2);
+  const [chargingPhase, setChargingPhase] = useState('CC');
   const [cumulativeEnergyWh, setCumulativeEnergyWh] = useState(0);
   const [invoice, setInvoice] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
@@ -92,7 +102,7 @@ export default function Kiosk() {
     return () => clearInterval(t);
   }, []);
 
-  // Fetch station list if none selected
+  // Fetch station list
   useEffect(() => {
     fetch(`${API_URL}/api/v1/stations`)
       .then((res) => res.json())
@@ -106,11 +116,21 @@ export default function Kiosk() {
       .catch((err) => setError(err.message));
   }, [selectedStationId]);
 
+  // Request helper with Operator JWT
+  const kioskFetch = useCallback((path, options = {}) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    };
+    return fetch(`${API_URL}${path}`, { ...options, headers });
+  }, [token]);
+
   // Fetch Kiosk State
   const fetchState = useCallback(async () => {
     if (!selectedStationId) return;
     try {
-      const res = await fetch(`${API_URL}/api/v1/kiosk/${selectedStationId}/state`);
+      const res = await kioskFetch(`/api/v1/kiosk/${selectedStationId}/state`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to fetch kiosk state');
       setKioskState(data.data);
@@ -124,7 +144,7 @@ export default function Kiosk() {
     } finally {
       setLoading(false);
     }
-  }, [selectedStationId]);
+  }, [selectedStationId, kioskFetch]);
 
   useEffect(() => {
     fetchState();
@@ -139,47 +159,58 @@ export default function Kiosk() {
     }
   }, [kioskState?.qr?.token]);
 
-  // Telemetry streaming tick
+  // Telemetry streaming loop with detailed payload
   useEffect(() => {
     let timer;
     if (simStreaming && kioskState?.activeSession) {
       timer = setInterval(async () => {
-        // Increment energy & SoC
         const deltaWh = Math.round((livePowerKw * 1000 / 3600) * 2); // 2-second increment
         const nextWh = cumulativeEnergyWh + deltaWh;
-        const nextSoc = Math.min(100, liveSoc + 0.2);
+        const nextSoc = Math.min(100, liveSoc + 0.3);
+        const nextBatTemp = Math.min(48, batteryTemp + 0.05);
+        const nextPhase = nextSoc > 80 ? 'CV' : 'CC';
 
         setCumulativeEnergyWh(nextWh);
         setLiveSoc(Math.round(nextSoc * 10) / 10);
+        setBatteryTemp(Math.round(nextBatTemp * 10) / 10);
+        setChargingPhase(nextPhase);
 
         try {
-          await fetch(`${API_URL}/api/v1/kiosk/${selectedStationId}/telemetry`, {
+          await kioskFetch(`/api/v1/kiosk/${selectedStationId}/telemetry`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              connectorId: kioskState.connector.id,
+              connectorId: kioskState.connector?.id,
               energyWh: nextWh,
               powerKw: livePowerKw,
               voltage: liveVoltage,
               current: liveCurrent,
+              voltageL1: 400.2,
+              voltageL2: 399.8,
+              voltageL3: 400.5,
+              frequencyHz: 50.02,
+              powerFactor: 0.99,
               socPercent: nextSoc,
+              batteryTempC: nextBatTemp,
+              chargerTempC: chargerTemp,
+              chargingPhase: nextPhase,
+              pilotSignalState: 'C',
+              cableLockStatus: 'LOCKED',
             }),
           });
         } catch {
-          // ignore telemetry transient drop
+          // ignore telemetry transient drops
         }
       }, 2000);
     }
     return () => clearInterval(timer);
-  }, [simStreaming, kioskState?.activeSession, cumulativeEnergyWh, livePowerKw, liveVoltage, liveCurrent, liveSoc, selectedStationId, kioskState?.connector?.id]);
+  }, [simStreaming, kioskState?.activeSession, cumulativeEnergyWh, livePowerKw, liveVoltage, liveCurrent, liveSoc, batteryTemp, chargerTemp, selectedStationId, kioskState?.connector?.id, kioskFetch]);
 
   // Direct Hardware Start
   const handleHardwareStart = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/api/v1/kiosk/${selectedStationId}/start-session`, {
+      const res = await kioskFetch(`/api/v1/kiosk/${selectedStationId}/start-session`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ connectorId: kioskState?.connector?.id }),
       });
       const json = await res.json();
@@ -200,9 +231,8 @@ export default function Kiosk() {
     try {
       setLoading(true);
       setSimStreaming(false);
-      const res = await fetch(`${API_URL}/api/v1/kiosk/${selectedStationId}/stop-session`, {
+      const res = await kioskFetch(`/api/v1/kiosk/${selectedStationId}/stop-session`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           connectorId: kioskState?.connector?.id,
           finalEnergyWh: cumulativeEnergyWh,
@@ -221,9 +251,14 @@ export default function Kiosk() {
 
   const isCharging = !!kioskState?.activeSession;
   const isReserved = !!kioskState?.activeBooking && !isCharging;
-  const liveCost = kioskState?.activeSession
-    ? Math.round(((cumulativeEnergyWh / 1000) * (kioskState.tariff?.pricePerKwh || 12.5) + (kioskState.tariff?.flatFee || 20)) * 100) / 100
-    : 0;
+  const pricePerKwh = kioskState?.tariff?.pricePerKwh || 12.5;
+  const flatFee = kioskState?.tariff?.flatFee || 20;
+
+  const energyKwh = cumulativeEnergyWh / 1000;
+  const baseEnergyCost = Math.round(energyKwh * pricePerKwh * 100) / 100;
+  const subtotal = Math.round((baseEnergyCost + flatFee) * 100) / 100;
+  const gst18 = Math.round(subtotal * 0.18 * 100) / 100;
+  const liveTotalCost = isCharging ? Math.round((subtotal + gst18) * 100) / 100 : 0;
 
   return (
     <div className="kiosk-page">
@@ -238,14 +273,22 @@ export default function Kiosk() {
               </div>
               <div className="kiosk-station-info">
                 <h2>{kioskState?.station?.name || 'EV Charger Kiosk'}</h2>
-                <p>{kioskState?.station?.city} · {kioskState?.connector?.standard || 'CCS2'} · {kioskState?.connector?.maxPowerKw || 60} kW</p>
+                <p>{kioskState?.station?.city} · {kioskState?.connector?.standard || 'CCS2'} ({kioskState?.connector?.maxPowerKw || 60} kW)</p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              {/* Operator JWT Auth Indicator */}
+              {isAuthenticated && (user?.role === 'operator' || user?.role === 'admin') && (
+                <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 999, background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <ShieldCheckmarkRegular /> CPO JWT: {user?.name?.split(' ')[0] || 'Operator'}
+                </span>
+              )}
+
               <span style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono, monospace)', color: '#94a3b8' }}>
                 <TimerRegular style={{ verticalAlign: 'middle', marginRight: 4 }} /> {currentTime}
               </span>
+
               <div className={`kiosk-status-pill ${isCharging ? 'kiosk-status-pill--charging' : isReserved ? 'kiosk-status-pill--reserved' : 'kiosk-status-pill--available'}`}>
                 {isCharging ? '⚡ CHARGING' : isReserved ? '🕒 RESERVED' : '● AVAILABLE'}
               </div>
@@ -259,115 +302,136 @@ export default function Kiosk() {
               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <CheckmarkCircleRegular style={{ fontSize: '3.5rem', color: '#10b981', marginBottom: 12 }} />
                 <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>Charging Session Completed</h2>
-                <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: 20 }}>Thank you for using ChargeGrid. Payment is ready in the user app.</p>
+                <p style={{ color: '#94a3b8', fontSize: '0.88rem', marginBottom: 20 }}>
+                  Itemized tax invoice generated. Driver can pay in app via UPI / Card.
+                </p>
 
                 <div className="kiosk-invoice-card">
                   <div className="kiosk-invoice-row">
+                    <span>Driver / User</span>
+                    <strong style={{ color: '#f8fafc' }}>{invoice.driver?.name || 'EV Driver'}</strong>
+                  </div>
+                  <div className="kiosk-invoice-row">
                     <span>Energy Delivered</span>
-                    <strong style={{ color: '#f8fafc' }}>{invoice.energyDeliveredKwh} kWh</strong>
+                    <strong style={{ color: '#38bdf8' }}>{invoice.energyDeliveredKwh} kWh</strong>
                   </div>
                   <div className="kiosk-invoice-row">
                     <span>Duration</span>
                     <span>{invoice.durationMinutes} mins</span>
                   </div>
                   <div className="kiosk-invoice-row">
-                    <span>Base Energy Rate</span>
-                    <span>{invoice.tariffRate}</span>
+                    <span>Base Energy Charge ({invoice.tariffRate})</span>
+                    <span>₹{invoice.baseEnergyCost}</span>
                   </div>
                   <div className="kiosk-invoice-row">
-                    <span>Connection Flat Fee</span>
+                    <span>Fixed Connection Fee</span>
                     <span>₹{invoice.flatConnectionFee}</span>
                   </div>
+                  <div className="kiosk-invoice-row">
+                    <span>GST (18%)</span>
+                    <span>₹{invoice.gst18}</span>
+                  </div>
                   <div className="kiosk-invoice-row kiosk-invoice-row--total">
-                    <span>Total Amount</span>
+                    <span>Total Amount Due</span>
                     <span>₹{invoice.totalAmount} INR</span>
                   </div>
                 </div>
 
-                <button className="btn-primary" onClick={() => setInvoice(null)} style={{ marginTop: 24 }}>
-                  Back to Terminal Screen
+                <button className="btn-primary" onClick={() => setInvoice(null)} style={{ marginTop: 20 }}>
+                  Back to Main Screen
                 </button>
               </motion.div>
             ) : isCharging ? (
-              /* ── Active Charging View ── */
+              /* ── Active Charging View with Detailed Dials ── */
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ width: '100%' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, marginBottom: 6 }}>
                   <PlugConnectedRegular style={{ fontSize: '1.4rem', color: '#38bdf8' }} />
-                  <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#e2e8f0' }}>Vehicle Connected & Charging</span>
+                  <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#e2e8f0' }}>
+                    EV Connected · Phase: <strong style={{ color: '#38bdf8' }}>{chargingPhase} ({chargingPhase === 'CC' ? 'Constant Current' : 'Constant Voltage'})</strong>
+                  </span>
                 </div>
 
-                {/* Battery SoC */}
+                {/* Battery SoC & Thermal Status */}
                 <div className="kiosk-battery-container" style={{ margin: '0 auto' }}>
                   <div className="kiosk-battery-header">
                     <span>Battery State of Charge (SoC)</span>
-                    <span style={{ color: '#38bdf8' }}>{liveSoc}%</span>
+                    <span style={{ color: '#38bdf8' }}>{liveSoc}% · Pack: {batteryTemp}°C</span>
                   </div>
                   <div className="kiosk-battery-track">
                     <div className="kiosk-battery-fill" style={{ width: `${liveSoc}%` }} />
                   </div>
                 </div>
 
-                {/* Live Telemetry Grid */}
+                {/* Detailed Telemetry Grid */}
                 <div className="kiosk-telemetry-grid">
                   <div className="kiosk-metric-card">
                     <span className="kiosk-metric-label">Power Output</span>
                     <div className="kiosk-metric-value">{livePowerKw}<span className="kiosk-metric-unit"> kW</span></div>
                   </div>
                   <div className="kiosk-metric-card">
-                    <span className="kiosk-metric-label">Voltage / Current</span>
-                    <div className="kiosk-metric-value" style={{ fontSize: '1.3rem' }}>{liveVoltage}V / {liveCurrent}A</div>
+                    <span className="kiosk-metric-label">Bus Voltage / Current</span>
+                    <div className="kiosk-metric-value" style={{ fontSize: '1.25rem' }}>{liveVoltage}V / {liveCurrent}A</div>
                   </div>
                   <div className="kiosk-metric-card">
-                    <span className="kiosk-metric-label">Energy Delivered</span>
-                    <div className="kiosk-metric-value">{(cumulativeEnergyWh / 1000).toFixed(2)}<span className="kiosk-metric-unit"> kWh</span></div>
+                    <span className="kiosk-metric-label">Delivered Energy</span>
+                    <div className="kiosk-metric-value">{energyKwh.toFixed(2)}<span className="kiosk-metric-unit"> kWh</span></div>
                   </div>
                 </div>
 
-                {/* Live Cost */}
+                {/* Live Itemized Accounting Box */}
                 <div className="kiosk-live-cost">
-                  <span className="kiosk-metric-label" style={{ color: '#34d399' }}>Live Running Cost</span>
-                  <div className="kiosk-cost-amount">₹{liveCost.toFixed(2)}</div>
-                  <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Tariff: ₹{kioskState?.tariff?.pricePerKwh || 12.5}/kWh + ₹{kioskState?.tariff?.flatFee || 20} flat fee</span>
+                  <span className="kiosk-metric-label" style={{ color: '#34d399' }}>Live Total Running Cost (incl. 18% GST)</span>
+                  <div className="kiosk-cost-amount">₹{liveTotalCost.toFixed(2)}</div>
+                  <div style={{ display: 'flex', gap: 16, fontSize: '0.78rem', color: '#94a3b8', marginTop: 4 }}>
+                    <span>Energy: ₹{baseEnergyCost.toFixed(2)}</span>
+                    <span>·</span>
+                    <span>Fee: ₹{flatFee}</span>
+                    <span>·</span>
+                    <span>GST (18%): ₹{gst18.toFixed(2)}</span>
+                  </div>
                 </div>
               </motion.div>
             ) : (
-              /* ── Idle / Reserved / QR View ── */
+              /* ── Idle / Reserved / QR View with Glowing Halo ── */
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 {isReserved ? (
-                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 14, padding: '12px 20px', marginBottom: 16 }}>
+                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 14, padding: '12px 20px', marginBottom: 14 }}>
                     <h3 style={{ fontSize: '1.05rem', color: '#fbbf24', margin: '0 0 4px 0' }}>Reserved for {kioskState.activeBooking.user?.name || 'EV Driver'}</h3>
                     <p style={{ fontSize: '0.8rem', color: '#cbd5e1', margin: 0 }}>
-                      Slot: {new Date(kioskState.activeBooking.slotStart).toLocaleTimeString()} - {new Date(kioskState.activeBooking.slotEnd).toLocaleTimeString()}
+                      Slot Window: {new Date(kioskState.activeBooking.slotStart).toLocaleTimeString()} - {new Date(kioskState.activeBooking.slotEnd).toLocaleTimeString()}
                     </p>
                   </div>
                 ) : (
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', margin: '0 0 4px 0' }}>Scan QR with ChargeGrid App</h3>
+                  <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', margin: '0 0 4px 0' }}>Scan QR to Start Charging</h3>
                 )}
 
-                <p style={{ fontSize: '0.88rem', color: '#94a3b8', margin: 0 }}>
-                  Scan the rotating HMAC code to confirm slot arrival and start DC fast charging.
+                <p style={{ fontSize: '0.86rem', color: '#94a3b8', margin: 0 }}>
+                  Scan the rotating security token with the ChargeGrid app to start charging.
                 </p>
 
+                {/* Glowing Green / Red Halo Box */}
                 <div className={`kiosk-qr-halo-wrapper ${isReserved ? 'kiosk-qr-halo--reserved' : 'kiosk-qr-halo--available'}`}>
                   <div className="kiosk-qr-box">
                     <canvas ref={qrCanvasRef} width={200} height={200} />
                   </div>
                   <div className={`kiosk-qr-status-tag ${isReserved ? 'kiosk-qr-status-tag--reserved' : 'kiosk-qr-status-tag--available'}`}>
-                    {isReserved ? '🔴 RESERVED / SLOT ACTIVE' : '🟢 OPEN / READY TO SCAN'}
+                    {isReserved ? '🔴 OCCUPIED / RESERVED SLOT' : '🟢 OPEN / READY FOR WALK-IN'}
                   </div>
                 </div>
 
                 <div className="kiosk-qr-notice">
-                  Rotating security token · Expires {kioskState?.qr ? new Date(kioskState.qr.expiresAt).toLocaleTimeString() : '—'}
+                  HMAC Signed · Expires {kioskState?.qr ? new Date(kioskState.qr.expiresAt).toLocaleTimeString() : '—'}
                 </div>
               </motion.div>
             )}
           </div>
 
-          {/* Footer Controls */}
+          {/* Footer with Hardware State */}
           <div className="kiosk-footer">
-            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-              Charger ID: <span style={{ color: '#94a3b8', fontFamily: 'var(--font-mono, monospace)' }}>{selectedStationId?.slice(0, 8)}...</span>
+            <div style={{ display: 'flex', gap: 14, fontSize: '0.78rem', color: '#64748b' }}>
+              <span>Grid: <strong style={{ color: '#10b981' }}>50.02 Hz (0.99 PF)</strong></span>
+              <span>Lock: <strong style={{ color: isCharging ? '#38bdf8' : '#94a3b8' }}>{isCharging ? '🔒 LOCKED' : 'UNLOCKED'}</strong></span>
+              <span>Temp: <strong style={{ color: '#94a3b8' }}>{chargerTemp}°C</strong></span>
             </div>
 
             {isCharging && (
@@ -381,11 +445,22 @@ export default function Kiosk() {
         {/* ── Right: Hardware Controls Simulator Panel ── */}
         <div className="kiosk-hardware-panel">
           <h3>
-            <VehicleCarRegular /> Hardware Simulator
+            <VehicleCarRegular /> Hardware & CPO Console
           </h3>
           <p style={{ fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5, margin: 0 }}>
-            Simulate physical kiosk sensors, EV plug connections, and live power pulses sent from EVSE microcontrollers.
+            Simulate physical kiosk sensors, 3-phase grid load, EV battery thermal pulses, and Operator JWT verification.
           </p>
+
+          {/* Operator JWT Badge */}
+          <div style={{ background: 'rgba(15, 23, 42, 0.8)', border: '1px solid #1e293b', borderRadius: 12, padding: '10px 14px', fontSize: '0.82rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+              <span style={{ color: '#94a3b8', fontWeight: 600 }}>CPO JWT Auth</span>
+              <strong style={{ color: token ? '#10b981' : '#f59e0b' }}>{token ? 'Active & Signed' : 'Anonymous Mode'}</strong>
+            </div>
+            <span style={{ fontSize: '0.74rem', color: '#64748b', wordBreak: 'break-all' }}>
+              {token ? `Bearer ${token.slice(0, 24)}...` : 'Sign in as operator to sign hardware requests'}
+            </span>
+          </div>
 
           {/* Select Station */}
           <div className="hardware-control-group">
@@ -401,7 +476,7 @@ export default function Kiosk() {
             </select>
           </div>
 
-          {/* EV Cable Plug */}
+          {/* EV Cable Connection */}
           <div className="hardware-control-group">
             <label className="hardware-control-label">EV Cable Connection</label>
             <button
@@ -421,17 +496,29 @@ export default function Kiosk() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div className="hardware-control-group">
-                <label className="hardware-control-label">Telemetry Output (kW)</label>
+                <label className="hardware-control-label">Charging Power Output: {livePowerKw} kW</label>
                 <input
                   type="range"
                   min={10}
-                  max={120}
+                  max={150}
                   step={5}
                   value={livePowerKw}
                   onChange={(e) => setLivePowerKw(Number(e.target.value))}
                   style={{ width: '100%' }}
                 />
-                <span style={{ fontSize: '0.78rem', color: '#38bdf8', textAlign: 'right' }}>{livePowerKw} kW Output</span>
+              </div>
+
+              <div className="hardware-control-group">
+                <label className="hardware-control-label">Battery Pack Temp: {batteryTemp}°C</label>
+                <input
+                  type="range"
+                  min={20}
+                  max={55}
+                  step={1}
+                  value={batteryTemp}
+                  onChange={(e) => setBatteryTemp(Number(e.target.value))}
+                  style={{ width: '100%' }}
+                />
               </div>
 
               <button
@@ -448,10 +535,13 @@ export default function Kiosk() {
             </div>
           )}
 
-          {/* Open App view shortcut */}
-          <div style={{ borderTop: '1px solid #1e293b', paddingTop: 16 }}>
-            <Link to="/discover" className="btn-secondary" style={{ width: '100%', justifyContent: 'center', fontSize: '0.85rem' }}>
-              Open Driver App / Booking View
+          {/* Shortcuts */}
+          <div style={{ borderTop: '1px solid #1e293b', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Link to="/operator" className="btn-secondary" style={{ width: '100%', justifyContent: 'center', fontSize: '0.84rem' }}>
+              Open Operator Console
+            </Link>
+            <Link to="/sessions" className="btn-secondary" style={{ width: '100%', justifyContent: 'center', fontSize: '0.84rem' }}>
+              Open Driver Session & Payment
             </Link>
           </div>
         </div>

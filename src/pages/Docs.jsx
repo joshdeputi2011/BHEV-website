@@ -67,7 +67,7 @@ export default function Docs() {
               <CodeRegular />
               <span>API Reference v1</span>
             </div>
-            <h1>CHARGEGRID API <span className="gradient-text">Documentation</span></h1>
+            <h1>CHARGEGRID API <span className="tiranga-gradient-text">Documentation</span></h1>
             <p>
               Integrate once with a CPO-neutral, normalized EV charging data platform.
               Internal governance endpoints are intentionally not public documentation.

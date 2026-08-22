@@ -1,244 +1,302 @@
 /* ═══════════════════════════════════════════════════
-   Operator Dashboard Styles (Enhanced)
+   Operator Console Stylesheet — Dual Mode & Feature Rich
    ═══════════════════════════════════════════════════ */
 
 .operator-page {
+  padding-top: 96px;
+  padding-bottom: 56px;
   min-height: 100vh;
-  padding: 100px var(--space-lg) var(--space-2xl);
   position: relative;
 }
 
 .operator-page__header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+  margin-bottom: 24px;
   flex-wrap: wrap;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
 }
 
 .operator-page__header h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  margin: 6px 0;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .operator-page__header p {
+  max-width: 680px;
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-top: var(--space-xs);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.operator-page__message {
+  color: #D97706;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  font-weight: 500;
 }
 
 /* Tabs */
 .operator-page__tabs {
   display: flex;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-xl);
+  gap: 8px;
+  margin-bottom: 24px;
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 0;
+  padding-bottom: 4px;
   overflow-x: auto;
 }
 
 .operator-page__tab {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-md) var(--space-lg);
-  background: none;
-  color: var(--text-tertiary);
-  font-size: 0.9rem;
-  font-weight: 500;
+  gap: 8px;
+  padding: 10px 18px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 600;
   cursor: pointer;
+  border: none;
   border-bottom: 2px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .operator-page__tab:hover {
   color: var(--text-primary);
+  background: var(--bg-surface-hover);
 }
 
 .operator-page__tab--active {
   color: var(--accent);
   border-bottom-color: var(--accent);
+  background: var(--accent-subtle);
 }
 
-/* Station list */
+[data-theme="gov"] .operator-page__tab--active {
+  color: var(--saffron-dark);
+  border-bottom-color: var(--saffron-dark);
+  background: #FFF7ED;
+}
+
+/* Grid Layout */
 .operator-page__grid {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: var(--space-xl);
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
 }
 
 .operator-page__stations {
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-md);
+  gap: 6px;
   max-height: 600px;
   overflow-y: auto;
 }
 
 .operator-page__station {
+  text-align: left;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: var(--space-md);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid transparent;
-  text-align: left;
-  transition: all 0.2s ease;
+  padding: 12px 14px;
   color: var(--text-secondary);
+  background: transparent;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.12s ease;
+  cursor: pointer;
 }
 
 .operator-page__station:hover {
-  background: var(--glass-bg-hover);
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
 }
 
 .operator-page__station--active {
-  background: rgba(57, 255, 150, 0.06) !important;
-  border-color: var(--accent) !important;
+  background: var(--accent-subtle);
+  border-color: var(--border-accent);
+  color: var(--text-primary);
+}
+
+[data-theme="gov"] .operator-page__station--active {
+  background: #FFF7ED;
+  border-color: #FED7AA;
 }
 
 .operator-page__station strong {
-  color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
-.operator-page__station span {
-  font-size: 0.8rem;
+.operator-page__station span,
+.operator-page__station small {
+  font-size: 0.78rem;
   color: var(--text-tertiary);
 }
 
-.operator-page__station small {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-/* Display panel */
 .operator-page__display {
-  padding: var(--space-xl);
-  min-height: 400px;
+  padding: 28px;
 }
 
 .operator-page__display-head {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .operator-page__display-head p {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.operator-page__display-head h2 {
-  font-size: 1.3rem;
+  letter-spacing: 0.04em;
   font-weight: 600;
 }
 
-/* QR section */
+.operator-page__display h2 {
+  margin-top: 4px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
 .operator-page__qr {
+  min-height: 180px;
+  margin: 20px 0 12px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: var(--space-lg);
-  padding: var(--space-lg);
-  background: var(--glass-bg);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--glass-border);
-  margin-bottom: var(--space-md);
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
 }
 
 .operator-page__qr svg {
-  font-size: 2rem;
+  font-size: 64px;
   color: var(--accent);
-  flex-shrink: 0;
+}
+
+[data-theme="gov"] .operator-page__qr svg {
+  color: var(--saffron-dark);
 }
 
 .operator-page__qr code {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  width: 100%;
+  max-height: 44px;
+  overflow: hidden;
   word-break: break-all;
-  line-height: 1.4;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-align: center;
 }
 
 .operator-page__expiry {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: var(--space-xl);
+  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  margin-bottom: 16px;
 }
 
-/* Connectors grid */
 .operator-page__connectors {
+  margin-top: 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
 }
 
-.operator-page__connectors > div {
+.operator-page__connectors div {
+  padding: 12px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: var(--space-md);
-  background: var(--glass-bg);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--glass-border);
 }
 
 .operator-page__connectors strong {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .operator-page__connectors span {
+  color: var(--text-secondary);
   font-size: 0.8rem;
-  color: var(--text-tertiary);
+  font-family: var(--font-mono);
 }
 
-/* Message bar */
-.operator-page__message {
-  display: flex;
+/* CP Link */
+.operator-page__cp-link {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-md);
-  background: rgba(255, 184, 69, 0.08);
-  border: 1px solid rgba(255, 184, 69, 0.25);
-  border-radius: var(--radius-sm);
-  color: #FFD080;
-  font-size: 0.85rem;
-  margin-bottom: var(--space-lg);
+  gap: 8px;
+  margin-top: 20px;
+  padding: 10px 16px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
 }
 
-/* Schedules tab */
+.operator-page__cp-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="gov"] .operator-page__cp-link {
+  background: #FFF7ED;
+  color: var(--saffron-dark);
+  border-color: #FED7AA;
+}
+
+/* Schedules Tab */
 .operator-page__schedules {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: 12px;
 }
 
 .operator-page__booking-card {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
-  gap: var(--space-md);
+  gap: 16px;
   align-items: center;
-  padding: var(--space-lg);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  padding: 16px 20px;
   border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
 }
 
 .operator-page__booking-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .operator-page__booking-label {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-muted);
@@ -247,104 +305,88 @@
 .operator-page__booking-value {
   font-size: 0.9rem;
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .operator-page__booking-status {
   padding: 4px 12px;
   border-radius: var(--radius-pill);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .operator-page__booking-status--confirmed {
-  background: rgba(57, 255, 150, 0.12);
-  color: var(--accent);
+  background: rgba(16, 185, 129, 0.12);
+  color: #10B981;
 }
 
 .operator-page__booking-status--arrived {
-  background: rgba(69, 191, 255, 0.12);
-  color: var(--accent-blue);
+  background: rgba(59, 130, 246, 0.12);
+  color: #3B82F6;
 }
 
 .operator-page__booking-status--charging {
-  background: rgba(199, 139, 255, 0.12);
-  color: #C78BFF;
+  background: rgba(168, 85, 247, 0.12);
+  color: #A855F7;
 }
 
-/* API Keys tab */
+/* API Tab */
 .operator-page__api-section {
-  max-width: 700px;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .operator-page__api-card {
-  padding: var(--space-xl);
-  margin-bottom: var(--space-lg);
+  padding: 24px;
+  border-radius: var(--radius-lg);
 }
 
 .operator-page__api-card h3 {
   font-size: 1.1rem;
-  margin-bottom: var(--space-md);
+  margin-bottom: 8px;
 }
 
 .operator-page__api-card p {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: var(--space-md);
+  margin-bottom: 12px;
 }
 
 .operator-page__api-endpoint {
-  font-family: 'Fira Code', monospace;
-  font-size: 0.82rem;
-  background: rgba(0, 0, 0, 0.3);
-  padding: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  background: var(--bg-secondary);
+  padding: 12px 16px;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
   color: var(--accent);
   word-break: break-all;
 }
 
-/* Charging point link */
-.operator-page__cp-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-top: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-  background: rgba(57, 255, 150, 0.08);
-  border: 1px solid rgba(57, 255, 150, 0.2);
-  border-radius: var(--radius-sm);
-  color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.2s;
+[data-theme="gov"] .operator-page__api-endpoint {
+  color: var(--saffron-dark);
 }
 
-.operator-page__cp-link:hover {
-  background: rgba(57, 255, 150, 0.15);
-  transform: translateY(-1px);
-}
+@media (max-width: 800px) {
+  .operator-page__header,
+  .operator-page__display-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-.operator-page__empty {
-  padding: var(--space-2xl);
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-@media (max-width: 768px) {
   .operator-page__grid {
     grid-template-columns: 1fr;
   }
 
-  .operator-page__booking-card {
-    grid-template-columns: 1fr 1fr;
+  .operator-page__stations {
+    max-height: 260px;
   }
 
-  .operator-page__header {
-    flex-direction: column;
-    align-items: flex-start;
+  .operator-page__booking-card {
+    grid-template-columns: 1fr 1fr;
   }
 }

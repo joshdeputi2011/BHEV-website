@@ -1,36 +1,34 @@
 import { motion } from 'framer-motion';
 import './GlowBlob.css';
 
-export default function GlowBlob({ color = 'green', size = 200, top, left, right, bottom, delay = 0 }) {
+export default function GlowBlob({ color = 'green', size = 240, top, left, right, bottom, delay = 0 }) {
   const colorMap = {
-    green: 'var(--glow-green)',
-    blue: 'var(--glow-blue)',
-    accent: 'var(--accent)',
-    cyan: 'var(--glow-cyan)',
+    green: 'rgba(16, 185, 129, 0.07)',
+    blue: 'rgba(14, 165, 233, 0.06)',
+    accent: 'rgba(52, 211, 153, 0.08)',
+    cyan: 'rgba(56, 189, 248, 0.06)',
   };
 
-  const bgColor = colorMap[color] || color;
+  const bgColor = colorMap[color] || colorMap.green;
 
   return (
     <motion.div
       className="glow-blob"
       style={{
-        width: size,
-        height: size,
+        width: size * 1.5,
+        height: size * 1.5,
         top,
         left,
         right,
         bottom,
-        background: `radial-gradient(circle, ${bgColor}30 0%, transparent 70%)`,
-        boxShadow: `0 0 80px 24px ${bgColor}20`,
+        background: `radial-gradient(circle, ${bgColor} 0%, transparent 70%)`,
       }}
+      initial={{ opacity: 0.5 }}
       animate={{
-        y: [0, -20, 0],
-        scale: [1, 1.05, 1],
-        opacity: [0.6, 1, 0.6],
+        opacity: [0.35, 0.55, 0.35],
       }}
       transition={{
-        duration: 6,
+        duration: 8,
         delay,
         repeat: Infinity,
         ease: 'easeInOut',

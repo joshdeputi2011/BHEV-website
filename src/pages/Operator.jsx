@@ -50,7 +50,7 @@ export default function Operator() {
     try {
       const response = await request('/api/v1/operator/mock-stations');
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Unable to load');
+      if (!response.ok) throw new Error(payload.error || 'Unable to load simulator');
       setStations(payload.data);
       setSelected(payload.data[0] || null);
     } catch (cause) {
@@ -93,21 +93,29 @@ export default function Operator() {
     return () => clearInterval(timer);
   }, [refreshQr]);
 
-  // Require auth
   if (!isAuthenticated) {
     return (
-      <div className="charging-point__loading">
-        <FlashRegular style={{ marginRight: 8 }} />
-        <Link to="/login" className="btn-primary btn-sm">Sign in to access Operator Console</Link>
-      </div>
+      <main className="operator-page container-wide">
+        <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <FlashRegular style={{ fontSize: '3rem', color: 'var(--accent)', marginBottom: 16 }} />
+          <h2>Authentication Required</h2>
+          <p style={{ color: 'var(--text-secondary)', margin: '8px 0 24px' }}>Please sign in with your operator credentials to access the console.</p>
+          <Link to="/login" className="btn-primary">Sign In</Link>
+        </div>
+      </main>
     );
   }
 
   if (user?.role !== 'operator' && user?.role !== 'admin') {
     return (
-      <div className="charging-point__loading">
-        ⚠️ Operator or Admin access required. Your role: {user?.role}
-      </div>
+      <main className="operator-page container-wide">
+        <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <WarningRegular style={{ fontSize: '3rem', color: '#EF4444', marginBottom: 16 }} />
+          <h2>Operator Access Required</h2>
+          <p style={{ color: 'var(--text-secondary)', margin: '8px 0 24px' }}>Your current role ({user?.role}) does not have permissions for the CPO console.</p>
+          <Link to="/" className="btn-secondary">Return Home</Link>
+        </div>
+      </main>
     );
   }
 
@@ -117,11 +125,11 @@ export default function Operator() {
 
       <header className="operator-page__header">
         <div>
-          <span className="charging-point__eyebrow">
-            <BuildingRegular /> CPO Dashboard
+          <span className="discover__eyebrow">
+            <BuildingRegular /> CPO Console
           </span>
-          <h1>Operator Console</h1>
-          <p>Manage your charging stations, schedules, and integrations</p>
+          <h1>Station <span className="tiranga-gradient-text">Operator</span></h1>
+          <p>Manage your charging stations, live schedules, dynamic HMAC QR rotation, and API integration.</p>
         </div>
         <button className="btn-primary" disabled={loading} onClick={sync}>
           <ArrowSyncRegular /> {loading ? 'Syncing…' : 'Sync mock feed'}
@@ -173,7 +181,7 @@ export default function Operator() {
                   </button>
                 ))}
                 {stations.length === 0 && (
-                  <p className="operator-page__empty">No stations synced. Click "Sync mock feed" to load.</p>
+                  <p style={{ padding: 24, textAlign: 'center', color: 'var(--text-tertiary)' }}>No stations synced. Click "Sync mock feed" above.</p>
                 )}
               </div>
 
@@ -219,7 +227,7 @@ export default function Operator() {
                     </Link>
                   </>
                 ) : (
-                  <p className="operator-page__empty">No synced station is available.</p>
+                  <p style={{ padding: 24, textAlign: 'center', color: 'var(--text-tertiary)' }}>No synced station is available.</p>
                 )}
               </div>
             </section>
@@ -261,7 +269,10 @@ export default function Operator() {
                 ))
               )}
               {stations.every((st) => !st.bookings?.length) && (
-                <p className="operator-page__empty">No active bookings across your stations.</p>
+                <div className="glass" style={{ padding: 36, textAlign: 'center', color: 'var(--text-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+                  <CalendarRegular style={{ fontSize: '2rem', marginBottom: 8 }} />
+                  <p>No active bookings across your connected stations.</p>
+                </div>
               )}
             </div>
           </motion.div>
@@ -278,12 +289,12 @@ export default function Operator() {
             <div className="operator-page__api-section">
               <div className="operator-page__api-card glass">
                 <h3>🔌 API Base URL</h3>
-                <p>Use this base URL for all API integrations:</p>
+                <p>Use this base URL for all CPO & driver integrations:</p>
                 <div className="operator-page__api-endpoint">{API_URL}/api/v1</div>
               </div>
 
               <div className="operator-page__api-card glass">
-                <h3>📡 Available Endpoints</h3>
+                <h3>📡 Key Endpoints</h3>
                 <p>Authenticate with your JWT token in the Authorization header:</p>
                 <div className="operator-page__api-endpoint" style={{ marginBottom: 12 }}>
                   Authorization: Bearer {'<your-token>'}
@@ -296,14 +307,14 @@ export default function Operator() {
               </div>
 
               <div className="operator-page__api-card glass">
-                <h3>📚 Full Documentation</h3>
-                <p>Interactive Swagger documentation with try-it-out capability:</p>
+                <h3>📚 Interactive Documentation</h3>
+                <p>Swagger documentation with try-it-out live request testing:</p>
                 <a
                   href={`${API_URL}/docs`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary btn-sm"
-                  style={{ marginTop: 8, display: 'inline-flex' }}
+                  style={{ marginTop: 12, display: 'inline-flex' }}
                 >
                   Open API Docs <ArrowRightRegular />
                 </a>

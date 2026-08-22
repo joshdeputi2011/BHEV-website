@@ -48,7 +48,7 @@ export default function Login() {
           <FlashRegular />
         </div>
 
-        <h1 className="login-page__title">Welcome back</h1>
+        <h1 className="login-page__title">Welcome <span className="tiranga-gradient-text">Back</span></h1>
         <p className="login-page__subtitle">
           Sign in to your ChargeGrid account
         </p>

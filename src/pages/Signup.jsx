@@ -58,7 +58,7 @@ export default function Signup() {
           <FlashRegular />
         </div>
 
-        <h1 className="signup-page__title">Create account</h1>
+        <h1 className="signup-page__title">Create <span className="tiranga-gradient-text">Account</span></h1>
         <p className="signup-page__subtitle">
           Join ChargeGrid — India's unified EV charging network
         </p>

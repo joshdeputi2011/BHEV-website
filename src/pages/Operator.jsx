@@ -41,6 +41,7 @@ import {
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
 import BookingModal from '../components/BookingModal';
+import GlowBlob from '../components/GlowBlob';
 import { API_URL } from '../utils/apiConfig';
 import QRCode from 'qrcode';
 import './Operator.css';
@@ -770,6 +771,14 @@ export default function Operator() {
                               <span className={`op-pill-status op-pill-status--${conn.status?.toLowerCase()}`}>
                                 {conn.status}
                               </span>
+                              <Link
+                                to={`/kiosk/${selectedStation.id}?chargerId=${conn.id}`}
+                                className="btn-secondary btn-xs"
+                                title="Open Kiosk Terminal for this EV Charger"
+                                style={{ marginTop: 4, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                              >
+                                <GaugeRegular /> Kiosk
+                              </Link>
                               <button
                                 className="btn-secondary btn-xs"
                                 onClick={() => handleToggleMaintenance(conn)}
@@ -1088,16 +1097,25 @@ export default function Operator() {
                               </span>
                             </td>
                           <td>
+                            <Link
+                              to={`/kiosk/${st.id}?chargerId=${conn.id}`}
+                              className="btn-secondary btn-xs"
+                              title="Launch Kiosk Terminal for this EV Charger"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginRight: 6 }}
+                            >
+                              <GaugeRegular /> Kiosk
+                            </Link>
                             <button
                               className="btn-secondary btn-xs"
                               onClick={() => handleToggleMaintenance(conn)}
-                              >
-                                {conn.status === 'MAINTENANCE' ? 'Restore' : 'Set Maintenance'}
-                              </button>
+                              style={{ marginRight: 6 }}
+                            >
+                              {conn.status === 'MAINTENANCE' ? 'Restore' : 'Set Maintenance'}
+                            </button>
                             <button className="btn-secondary btn-xs" onClick={() => handleDeleteCharger(conn)} disabled={loading}>
                               <DeleteRegular /> Delete
                             </button>
-                            </td>
+                          </td>
                           </tr>
                         ))
                       )}

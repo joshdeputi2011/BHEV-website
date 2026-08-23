@@ -269,13 +269,8 @@ export default function Operator() {
       }
       setQrCountdown(30);
     } catch (err) {
-      const issuedAt = Math.floor(Date.now() / 30000) * 30;
-      setQrData({
-        token: `UEI-QR-${(activeStn.id || 'st-001').slice(0, 8)}-${issuedAt}.HMAC_SHA256_VERIFIED`,
-        issuedAt: new Date(issuedAt * 1000).toISOString(),
-        expiresAt: new Date((issuedAt + 60) * 1000).toISOString()
-      });
-      setQrCountdown(30);
+      setQrData(null);
+      showToast(`Unable to generate a live QR code: ${err.message}`);
     }
   }, [selectedStation, stations, apiRequest]);
 

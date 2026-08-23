@@ -472,6 +472,10 @@ export default function Discover() {
   };
 
   const bookStation = async (station, bookingType = 'STANDARD') => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
     const connector = bestConnectorFor(station);
     if (!connector) return;
 
@@ -481,7 +485,10 @@ export default function Discover() {
       const start = new Date(Date.now() + 5 * 60 * 1000);
       const res = await fetch(`${api}/api/v1/bookings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({
           locationId: station.id,
           connectorId: connector.id,
@@ -489,8 +496,6 @@ export default function Discover() {
           slotEnd: new Date(start.getTime() + 60 * 60 * 1000).toISOString(),
           bookingType,
           emergency: bookingType === 'EMERGENCY',
-          driverName: user?.name || 'EV Driver',
-          driverEmail: user?.email || 'driver@chargegrid.local',
           vehicleName: evStatus?.vehicleName || 'Tata Nexon EV Max'
         })
       });

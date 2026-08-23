@@ -163,8 +163,9 @@ export default function Kiosk() {
       setQrDataUrl('');
       return;
     }
-    const token = kioskState?.qr?.token;
-    if (!token) return;
+    const token =
+      kioskState?.qr?.token ||
+      `UEI-KIOSK-${String(selectedStationId || 'BHEV-01').slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`;
 
     QRCode.toDataURL(token, {
       width: 220,

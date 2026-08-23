@@ -47,7 +47,7 @@ export default function Navbar() {
   const baseLinks = [
     { to: '/', label: 'Home' },
     { to: '/discover', label: 'Discover' },
-    { to: '/kiosk', label: 'Kiosk' },
+    { to: '/kiosk', label: 'Kiosk Sim' },
     { to: '/docs', label: 'API Docs' },
   ];
 

@@ -12,6 +12,7 @@ import Operator from './pages/Operator';
 import ChargingPoint from './pages/ChargingPoint';
 import Kiosk from './pages/Kiosk';
 import Sessions from './pages/Sessions';
+import Terminal from './pages/Terminal';
 
 export default function App() {
   return (
@@ -31,6 +32,8 @@ export default function App() {
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/kiosk" element={<Kiosk />} />
           <Route path="/kiosk/:stationId" element={<Kiosk />} />
+          <Route path="/terminal" element={<Terminal />} />
+          <Route path="/simulator" element={<Terminal />} />
           <Route path="/operator" element={<Operator />} />
           <Route path="/charging-point/:stationId" element={<ChargingPoint />} />
           <Route path="/admin" element={<Admin />} />

@@ -47,24 +47,37 @@ export default function Navbar() {
   const baseLinks = [
     { to: '/', label: 'Home' },
     { to: '/discover', label: 'Discover' },
-    { to: '/kiosk', label: 'Kiosk Sim' },
     { to: '/docs', label: 'API Docs' },
   ];
 
   // Show Sessions when authenticated
   const linksWithSessions = isAuthenticated
-    ? [...baseLinks.slice(0, 2), { to: '/sessions', label: 'My Sessions' }, ...baseLinks.slice(2)]
+    ? [
+        { to: '/', label: 'Home' },
+        { to: '/discover', label: 'Discover' },
+        { to: '/sessions', label: 'My Sessions' },
+        { to: '/docs', label: 'API Docs' },
+      ]
     : baseLinks;
 
-  // Only show Operator link for operator/admin roles
-  const linksWithOp = isAuthenticated && (user?.role === 'operator' || user?.role === 'admin')
-    ? [...linksWithSessions, { to: '/operator', label: 'Operator' }]
-    : linksWithSessions;
+  // Only show Kiosk and Operator links for operator/admin roles
+  const linksWithOp =
+    isAuthenticated && (user?.role === 'operator' || user?.role === 'admin')
+      ? [
+          { to: '/', label: 'Home' },
+          { to: '/discover', label: 'Discover' },
+          { to: '/sessions', label: 'My Sessions' },
+          { to: '/kiosk', label: 'Kiosk' },
+          { to: '/operator', label: 'Operator' },
+          { to: '/docs', label: 'API Docs' },
+        ]
+      : linksWithSessions;
 
   // Add admin link for admin role
-  const allLinks = isAuthenticated && user?.role === 'admin'
-    ? [...linksWithOp, { to: '/admin', label: 'Admin' }]
-    : linksWithOp;
+  const allLinks =
+    isAuthenticated && user?.role === 'admin'
+      ? [...linksWithOp.slice(0, -1), { to: '/admin', label: 'Admin' }, ...linksWithOp.slice(-1)]
+      : linksWithOp;
 
   return (
     <>

@@ -359,9 +359,22 @@ export default function Kiosk() {
                 </div>
               </div>
             ) : qrDataUrl ? (
-              <img src={qrDataUrl} alt="Kiosk Check-in QR" className="kiosk-qr-img" width={200} height={200} />
+              <img src={qrDataUrl} alt="Kiosk Check-in QR" className="kiosk-qr-img" width={200} height={200} style={{ width: 200, height: 200, display: 'block' }} />
             ) : (
-              <canvas ref={qrCanvasRef} width={200} height={200} />
+              <canvas
+                ref={(node) => {
+                  qrCanvasRef.current = node;
+                  if (node && !isCharging) {
+                    const token =
+                      kioskState?.qr?.token ||
+                      `UEI-KIOSK-${String(selectedStationId || 'BHEV-01').slice(0, 8)}-${Math.floor(Date.now() / 30000) * 30}.HMAC_SIG`;
+                    drawKioskQR(node, token, 200);
+                  }
+                }}
+                width={200}
+                height={200}
+                style={{ width: 200, height: 200, display: 'block' }}
+              />
             )}
           </div>
 

@@ -982,6 +982,7 @@ export default function Operator() {
                                 <QrCodeRegular /> QR
                               </button>
                               {stationScope === 'my' && (
+                                <>
                                 <button
                                   className="btn-secondary btn-sm"
                                   onClick={() => {
@@ -1022,6 +1023,7 @@ export default function Operator() {
                                 >
                                   <DeleteRegular /> Delete
                                 </button>
+                                </>
                               )}
                             </footer>
                           </article>

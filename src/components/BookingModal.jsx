@@ -23,9 +23,8 @@ import {
 } from '@fluentui/react-icons';
 import QRCode from 'qrcode';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../utils/apiConfig';
 import './BookingModal.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 const EV_PRESETS = [
   { id: 'nexon-ev', name: 'Tata Nexon EV Max', capacityKwh: 40.5, maxDcKw: 50, connector: 'CCS2' },

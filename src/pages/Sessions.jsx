@@ -25,9 +25,8 @@ import {
 import QRCode from 'qrcode';
 import { useAuth } from '../context/AuthContext';
 import GlowBlob from '../components/GlowBlob';
+import { API_URL } from '../utils/apiConfig';
 import './Sessions.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 function drawPassQR(canvas, text, size = 180) {
   if (!canvas || !text) return;

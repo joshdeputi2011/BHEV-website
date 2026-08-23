@@ -27,9 +27,8 @@ import {
 } from '@fluentui/react-icons';
 import urjaaLogo from '../assets/urjaa.svg';
 import QRCode from 'qrcode';
+import { API_URL } from '../utils/apiConfig';
 import './Kiosk.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 async function drawKioskQR(canvas, text, size = 200) {
   if (!canvas || !text) return;

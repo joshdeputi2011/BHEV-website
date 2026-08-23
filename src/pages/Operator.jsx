@@ -40,12 +40,10 @@ import {
   SearchRegular
 } from '@fluentui/react-icons';
 import { useAuth } from '../context/AuthContext';
-import GlowBlob from '../components/GlowBlob';
 import BookingModal from '../components/BookingModal';
+import { API_URL } from '../utils/apiConfig';
 import QRCode from 'qrcode';
 import './Operator.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 const NAV_ITEMS = [
   { key: 'overview', label: 'Dashboard', icon: <DataBarVerticalRegular /> },

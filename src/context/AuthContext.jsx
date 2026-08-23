@@ -2,8 +2,8 @@
 // Global authentication state with JWT persistence.
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { API_URL } from '../utils/apiConfig';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 const TOKEN_KEY = 'cg_token';
 const USER_KEY = 'cg_user';
 

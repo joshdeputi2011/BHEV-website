@@ -11,10 +11,9 @@ import {
 import AuthGate from '../components/AuthGate';
 import DataTable from '../components/DataTable';
 import GlowBlob from '../components/GlowBlob';
+import { API_URL } from '../utils/apiConfig';
 import '../components/DataTable.css';
 import './Admin.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 const tabs = [
   { key: 'users', label: 'Users', icon: <PeopleRegular /> },

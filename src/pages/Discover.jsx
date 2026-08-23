@@ -20,9 +20,8 @@ import {
 import { useAuth } from '../context/AuthContext';
 import MapplsStationMap from '../components/MapplsStationMap';
 import BookingModal from '../components/BookingModal';
+import { API_URL as api } from '../utils/apiConfig';
 import './Discover.css';
-
-const api = import.meta.env.VITE_API_URL || 'https://bhev-api.wittybay-7a064b00.centralindia.azurecontainerapps.io';
 
 const fmt = (n) => Number(n || 0).toLocaleString('en-IN');
 
